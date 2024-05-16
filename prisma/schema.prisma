@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  OWNER
+  WORKER
+  UNKNOW
+}
+
+enum CatProduct {
+  ELECTRO
+  DRINK
+  FOOD
+  FASHION
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  username      String
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          UserRole  @default(UNKNOW)
+}
+
+model ProductStock {
+  id           String     @id @unique
+  name         String
+  imageProduct String?
+  price        Float
+  stock        Float
+  cat          CatProduct
+
+  Product Product[]
+}
+
+model OnSaleProduct {
+  id            String      @id @default(cuid())
+  productId     String
+  quantity      Int
+  saledate      DateTime    @default(now())
+  transactionId Int
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model Product {
+  id            String          @id @default(cuid())
+  productId     String
+  product       ProductStock    @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellprice     Float
+  OnSaleProduct OnSaleProduct[]
+
+  @@unique([productId])
+}
+
+model Transaction {
+  id          Int             @id @default(autoincrement())
+  totalAmount Decimal?
+  createdAt   DateTime        @default(now())
+  products    OnSaleProduct[]
+}

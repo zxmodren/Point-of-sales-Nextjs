@@ -1,0 +1,18 @@
+/* Light mode skeleton */
+.skeleton {
+    background: linear-gradient(90deg, #cccccc 25%, #e0e0e0 50%, #cccccc 75%);
+    background-size: 200% 100%;
+    animation: metallic 1.5s infinite;
+    border-radius: 4px;
+  }
+  
+  
+  @keyframes metallic {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+  
