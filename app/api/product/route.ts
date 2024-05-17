@@ -1,7 +1,6 @@
 import { CatProduct, PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
-export const runtime = 'edge'
 const prisma = new PrismaClient();
 
 export const POST = async (request: Request) => {

@@ -1,7 +1,7 @@
 import { CatProduct, PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 const prisma = new PrismaClient();
-export const runtime = 'edge'
+
 export const PATCH = async (
     request: Request,
     { params }: { params: { id: string } }
