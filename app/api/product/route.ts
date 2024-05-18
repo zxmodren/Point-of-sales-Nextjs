@@ -3,9 +3,27 @@ import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
 const prisma = new PrismaClient();
 
+const generateUniqueId = async () => {
+    let isUnique = false;
+    let customId = '';
+
+    while (!isUnique) {
+        customId = `PRD-${uuidv4().slice(0, 8)}`;
+        const existingProduct = await prisma.productStock.findUnique({
+            where: { id: customId },
+        });
+
+        if (!existingProduct) {
+            isUnique = true;
+        }
+    }
+
+    return customId;
+};
+
 export const POST = async (request: Request) => {
     try {
-        const customId = `PRD-${uuidv4()}`;
+        const customId = await generateUniqueId();
         const body = await request.json();
     
         const newProduct = await prisma.productStock.create({
@@ -29,5 +47,5 @@ export const POST = async (request: Request) => {
     } finally {
         await prisma.$disconnect();
     }
-}    
+};    
   
