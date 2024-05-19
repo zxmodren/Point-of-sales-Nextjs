@@ -32,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import { PrintAlertDialog } from "./alert";
 import { useState } from "react";
+
 export default function Detail() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const handleDeleteClose = () => {

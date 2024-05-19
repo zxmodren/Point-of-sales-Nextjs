@@ -40,7 +40,8 @@ export function DeleteAlertDialog({
     setLoading(true);
     try {
       const response = await axios.delete(`/api/product/${data.product.id}`);
-      console.log("Product deleted:", response.data);
+      onClose();
+      router.refresh();
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         console.error("Server Error:", error.response?.data);
@@ -51,8 +52,6 @@ export function DeleteAlertDialog({
       }
     } finally {
       setLoading(false);
-      onClose();
-      router.refresh();
     }
   };
 

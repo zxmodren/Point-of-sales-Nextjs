@@ -14,11 +14,16 @@ import TableBodyOrders from "./component/Tbody";
 import FullscreenButton from "@/components/fullscreen/fullscreen";
 import Detail from "./component/detail";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, ReceiptText, Sheet, Truck, Printer } from "lucide-react";
-
+import { ReceiptText, Sheet, Plus } from "lucide-react";
+import { DialogDemo } from "./component/dialog";
 export function Orders() {
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
   const [showTable, setShowTable] = React.useState(true);
   const tableRef = React.useRef<HTMLDivElement>(null);
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
   return (
     <div ref={tableRef} className="w-full h-full">
       <Card
@@ -29,12 +34,24 @@ export function Orders() {
             <CardTitle>Orders</CardTitle>
             <CardDescription>Recent orders from your store.</CardDescription>
             <FullscreenButton targetRef={tableRef} />
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setShowTable(!showTable)}>
-              {showTable ? <ReceiptText /> : <Sheet />}
-            </Button>
+            <div className="flex items-center justify-start">
+              <div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setShowTable(!showTable)}>
+                  {showTable ? <ReceiptText /> : <Sheet />}
+                </Button>
+              </div>
+              <div className="pl-1">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setDialogOpen(true)}>
+                  <Plus />
+                </Button>
+              </div>
+            </div>
           </CardHeader>
         </div>
         <CardContent className="overflow-auto z-0">
@@ -46,6 +63,7 @@ export function Orders() {
           ) : (
             <Detail />
           )}
+          <DialogDemo open={dialogOpen} onClose={handleDialogClose} />
         </CardContent>
       </Card>
     </div>

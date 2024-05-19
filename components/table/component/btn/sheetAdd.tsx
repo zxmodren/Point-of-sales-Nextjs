@@ -79,6 +79,10 @@ export function SheetAdd({
 
       // Send validated data using axios
       const response = await axios.post("/api/product", validatedData);
+
+      // If no errors, close the dialog and refresh the page
+      onClose();
+      router.refresh();
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
@@ -96,8 +100,6 @@ export function SheetAdd({
       }
     } finally {
       setLoading(false);
-      onClose();
-      router.refresh();
     }
   };
 

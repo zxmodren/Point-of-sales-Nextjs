@@ -106,6 +106,8 @@ export function SheetEdit({
         `/api/product/${data.product.id}`,
         validatedData
       );
+      onClose();
+      router.refresh();
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
@@ -119,12 +121,9 @@ export function SheetEdit({
         }));
       } else {
         console.error(error);
-        // Handle other types of errors here
       }
     } finally {
       setLoading(false);
-      onClose();
-      router.refresh();
     }
   };
 
