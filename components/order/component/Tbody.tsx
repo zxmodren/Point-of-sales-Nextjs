@@ -1,138 +1,41 @@
-import { Badge } from "@/components/ui/badge";
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { TransactionData } from "@/types/transaction";
 
-function TableBodyOrders() {
+interface TableBodyProps {
+  data: TransactionData[];
+}
+
+function TableBodyOrders({ data }: TableBodyProps) {
   return (
     <>
       <TableBody>
-        <TableRow className="bg-accent">
-          <TableCell>
-            <div className="font-medium">Liam Johnson</div>
-            <div className="hidden text-sm text-muted-foreground md:inline">
-              liam@example.com
-            </div>
-          </TableCell>
-          <TableCell className="hidden sm:table-cell">Sale</TableCell>
-          <TableCell className="hidden sm:table-cell">
-            <Badge className="text-xs" variant="secondary">
-              Fulfilled
-            </Badge>
-          </TableCell>
-          <TableCell className="hidden md:table-cell">2023-06-23</TableCell>
-          <TableCell className="text-right">$250.00</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <div className="font-medium">Olivia Smith</div>
-            <div className="hidden text-sm text-muted-foreground md:inline">
-              olivia@example.com
-            </div>
-          </TableCell>
-          <TableCell className="hidden sm:table-cell">Refund</TableCell>
-          <TableCell className="hidden sm:table-cell">
-            <Badge className="text-xs" variant="outline">
-              Declined
-            </Badge>
-          </TableCell>
-          <TableCell className="hidden md:table-cell">2023-06-24</TableCell>
-          <TableCell className="text-right">$150.00</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <div className="font-medium">Liam Johnson</div>
-            <div className="hidden text-sm text-muted-foreground md:inline">
-              liam@example.com
-            </div>
-          </TableCell>
-          <TableCell className="hidden sm:table-cell">Sale</TableCell>
-          <TableCell className="hidden sm:table-cell">
-            <Badge className="text-xs" variant="secondary">
-              Fulfilled
-            </Badge>
-          </TableCell>
-          <TableCell className="hidden md:table-cell">2023-06-23</TableCell>
-          <TableCell className="text-right">$250.00</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <div className="font-medium">Noah Williams</div>
-            <div className="hidden text-sm text-muted-foreground md:inline">
-              noah@example.com
-            </div>
-          </TableCell>
-          <TableCell className="hidden sm:table-cell">Subscription</TableCell>
-          <TableCell className="hidden sm:table-cell">
-            <Badge className="text-xs" variant="secondary">
-              Fulfilled
-            </Badge>
-          </TableCell>
-          <TableCell className="hidden md:table-cell">2023-06-25</TableCell>
-          <TableCell className="text-right">$350.00</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <div className="font-medium">Emma Brown</div>
-            <div className="hidden text-sm text-muted-foreground md:inline">
-              emma@example.com
-            </div>
-          </TableCell>
-          <TableCell className="hidden sm:table-cell">Sale</TableCell>
-          <TableCell className="hidden sm:table-cell">
-            <Badge className="text-xs" variant="secondary">
-              Fulfilled
-            </Badge>
-          </TableCell>
-          <TableCell className="hidden md:table-cell">2023-06-26</TableCell>
-          <TableCell className="text-right">$450.00</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <div className="font-medium">Liam Johnson</div>
-            <div className="hidden text-sm text-muted-foreground md:inline">
-              liam@example.com
-            </div>
-          </TableCell>
-          <TableCell className="hidden sm:table-cell">Sale</TableCell>
-          <TableCell className="hidden sm:table-cell">
-            <Badge className="text-xs" variant="secondary">
-              Fulfilled
-            </Badge>
-          </TableCell>
-          <TableCell className="hidden md:table-cell">2023-06-23</TableCell>
-          <TableCell className="text-right">$250.00</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <div className="font-medium">Olivia Smith</div>
-            <div className="hidden text-sm text-muted-foreground md:inline">
-              olivia@example.com
-            </div>
-          </TableCell>
-          <TableCell className="hidden sm:table-cell">Refund</TableCell>
-          <TableCell className="hidden sm:table-cell">
-            <Badge className="text-xs" variant="outline">
-              Declined
-            </Badge>
-          </TableCell>
-          <TableCell className="hidden md:table-cell">2023-06-24</TableCell>
-          <TableCell className="text-right">$150.00</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <div className="font-medium">Emma Brown</div>
-            <div className="hidden text-sm text-muted-foreground md:inline">
-              emma@example.com
-            </div>
-          </TableCell>
-          <TableCell className="hidden sm:table-cell">Sale</TableCell>
-          <TableCell className="hidden sm:table-cell">
-            <Badge className="text-xs" variant="secondary">
-              Fulfilled
-            </Badge>
-          </TableCell>
-          <TableCell className="hidden md:table-cell">2023-06-26</TableCell>
-          <TableCell className="text-right">$450.00</TableCell>
-        </TableRow>
+        {data.map((item) => {
+          const totalPrice = item.product.sellprice * item.quantity;
+          return (
+            <TableRow key={item.id}>
+              <TableCell>
+                <div className="font-medium">
+                  {item.product.productstock.name.charAt(0).toUpperCase() +
+                    item.product.productstock.name.slice(1).toLowerCase()}
+                </div>
+                <div className="hidden text-sm text-muted-foreground md:inline">
+                  {item.productId}
+                </div>
+              </TableCell>
+              <TableCell className="hidden sm:table-cell">
+                {item.product.productstock.cat.charAt(0).toUpperCase() +
+                  item.product.productstock.cat.slice(1).toLowerCase()}
+              </TableCell>
+              <TableCell className="hidden sm:table-cell">
+                $ {item.product.sellprice}
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {item.quantity}
+              </TableCell>
+              <TableCell className="text-right">$ {totalPrice}</TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </>
   );

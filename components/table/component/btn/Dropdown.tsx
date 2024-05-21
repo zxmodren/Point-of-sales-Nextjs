@@ -16,7 +16,7 @@ import { CatProduct } from "@prisma/client";
 type Product = {
   id: string;
   sellprice: number;
-  product: {
+  productstock: {
     id: string;
     name: string;
     cat: CatProduct;

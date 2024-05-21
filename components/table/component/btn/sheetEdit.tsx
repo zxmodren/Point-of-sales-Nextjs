@@ -29,7 +29,7 @@ import { useRouter } from "next/navigation";
 type Data = {
   id: string;
   sellprice: number;
-  product: {
+  productstock: {
     id: string;
     name: string;
     cat: CatProduct;
@@ -47,14 +47,18 @@ export function SheetEdit({
   onClose: () => void;
   data: Data;
 }) {
-  const [productName, setProductName] = useState(data.product.name || "");
+  const [productName, setProductName] = useState(data.productstock.name || "");
   const [categoryProduct, setCategories] = useState<string>(
-    data.product.cat ?? ""
+    data.productstock.cat ?? ""
   );
   const [sellPrice, setSellPrice] = useState(data.sellprice || "");
-  const [buyPrice, setBuyPrice] = useState(data.product.price || "");
-  const [stockProduct, setStockProduct] = useState(data.product.stock || "");
-  const [searchTerm, setSearchTerm] = useState<string>(data.product.cat ?? "");
+  const [buyPrice, setBuyPrice] = useState(data.productstock.price || "");
+  const [stockProduct, setStockProduct] = useState(
+    data.productstock.stock || ""
+  );
+  const [searchTerm, setSearchTerm] = useState<string>(
+    data.productstock.cat ?? ""
+  );
   const [error, setError] = useState<{ [key: string]: string }>({});
 
   const buyPriceNumber = parseFloat(String(buyPrice)) || 0;
@@ -70,20 +74,20 @@ export function SheetEdit({
   useEffect(() => {
     if (!open) {
       // Reset input value when sheet is closed
-      setSearchTerm(data.product.cat ?? "");
-      setProductName(data.product.name || "");
+      setSearchTerm(data.productstock.cat ?? "");
+      setProductName(data.productstock.name || "");
       setSellPrice(data.sellprice || "");
-      setStockProduct(data.product.stock || "");
-      setBuyPrice(data.product.price || "");
-      setCategories(data.product.cat ?? "");
+      setStockProduct(data.productstock.stock || "");
+      setBuyPrice(data.productstock.price || "");
+      setCategories(data.productstock.cat ?? "");
     }
   }, [
     open,
-    data.product.name,
+    data.productstock.name,
     data.sellprice,
-    data.product.stock,
-    data.product.cat,
-    data.product.price,
+    data.productstock.stock,
+    data.productstock.cat,
+    data.productstock.price,
   ]);
   const handleCancel = () => {
     onClose();
@@ -103,7 +107,7 @@ export function SheetEdit({
 
       // Send validated data using axios
       const response = await axios.patch(
-        `/api/product/${data.product.id}`,
+        `/api/product/${data.productstock.id}`,
         validatedData
       );
       onClose();

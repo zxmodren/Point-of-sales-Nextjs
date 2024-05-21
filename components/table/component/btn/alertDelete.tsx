@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 type Data = {
   id: string;
-  product: {
+  productstock: {
     id: string;
     name: string;
   };
@@ -39,7 +39,9 @@ export function DeleteAlertDialog({
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const response = await axios.delete(`/api/product/${data.product.id}`);
+      const response = await axios.delete(
+        `/api/product/${data.productstock.id}`
+      );
       onClose();
       router.refresh();
     } catch (error: unknown) {
@@ -60,7 +62,7 @@ export function DeleteAlertDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you absolutely sure want to delete {data.product.name}?
+            Are you absolutely sure want to delete {data.productstock.name}?
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete the data

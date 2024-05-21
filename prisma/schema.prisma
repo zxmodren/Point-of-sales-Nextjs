@@ -48,31 +48,33 @@ model ProductStock {
   Product Product[]
 }
 
-model OnSaleProduct {
-  id            String      @id @default(cuid())
-  productId     String
-  quantity      Int
-  saledate      DateTime    @default(now())
-  transactionId Int
-  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-
-  @@index([productId])
-}
-
 model Product {
   id            String          @id @default(cuid())
   productId     String
-  product       ProductStock    @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productstock  ProductStock    @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sellprice     Float
   OnSaleProduct OnSaleProduct[]
 
   @@unique([productId])
 }
 
+model OnSaleProduct {
+  id            String      @id @default(cuid())
+  productId     String
+  quantity      Int
+  saledate      DateTime    @default(now())
+  transactionId String
+  product       Product     @relation(fields: [productId], references: [productId], onDelete: Cascade, onUpdate: Cascade)
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([productId, transactionId])
+}
+
 model Transaction {
-  id          Int             @id @default(autoincrement())
+  id          String          @id @default(cuid())
   totalAmount Decimal?
   createdAt   DateTime        @default(now())
+  isComplete  Boolean         @default(false)
+  ref         String?
   products    OnSaleProduct[]
 }

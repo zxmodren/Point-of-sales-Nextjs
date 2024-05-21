@@ -33,4 +33,14 @@ export const productSchema = z.object({
     path: ["sellPrice"],
   }
 );
+export const onsaleSchema = z.object({
+    productId: z
+    .string()
+    .nonempty("Select Product"),
+    qTy: z.number().positive("Buy price must be a positive number").min(1, "Buy price min 1"),
+    transactionId: z.string()
+    .nonempty("Transaction Id is Empty"),
+    
+})
+
 

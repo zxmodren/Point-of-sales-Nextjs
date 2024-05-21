@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 interface ProductData {
   id: string;
   sellprice: number;
-  product: {
+  productstock: {
     id: string;
     name: string;
     cat: CatProduct;
@@ -51,19 +51,21 @@ const TableBodyFeed: React.FC<TableBodyFeedProps> = ({ data }) => {
                   loading="lazy"
                 />
               </TableCell>
-              <TableCell className="font-medium">{item.product.name}</TableCell>
+              <TableCell className="font-medium">
+                {item.productstock.name}
+              </TableCell>
               <TableCell>
                 <Badge variant="outline">
-                  {item.product.cat.charAt(0).toUpperCase() +
-                    item.product.cat.slice(1).toLowerCase()}
+                  {item.productstock.cat.charAt(0).toUpperCase() +
+                    item.productstock.cat.slice(1).toLowerCase()}
                 </Badge>
               </TableCell>
               <TableCell>$ {item.sellprice}</TableCell>
               <TableCell className="hidden md:table-cell">
-                {item.product.stock}
+                {item.productstock.stock}
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                $ {item.product.price}
+                $ {item.productstock.price}
               </TableCell>
               <TableCell>
                 <Dropdown product={item} />

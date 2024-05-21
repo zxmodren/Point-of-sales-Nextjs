@@ -1,12 +1,5 @@
 "use client";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  CreditCard,
-  MoreVertical,
-  Printer,
-} from "lucide-react";
+import { Copy, MoreVertical, Printer } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,28 +16,36 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import { PrintAlertDialog } from "./alert";
 import { useState } from "react";
-
-export default function Detail() {
+import { TransactionData } from "@/types/transaction";
+interface DetailProps {
+  data: TransactionData[];
+  transactionId: string | null;
+  taxRate: number;
+}
+export default function Detail({ data, transactionId, taxRate }: DetailProps) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const handleDeleteClose = () => {
     setDeleteOpen(false);
   };
+
+  // Calculate subtotal, tax, and total
+  let subtotal = 0;
+  data.forEach((item) => {
+    subtotal += item.product.sellprice * item.quantity;
+  });
+  const tax = subtotal * taxRate; // Gunakan taxRate prop di sini
+  const total = subtotal + tax;
 
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-start bg-muted/50">
         <div className="grid gap-0.5">
           <CardTitle className="group flex items-center gap-2 text-lg">
-            Order Oe31b70H
+            {transactionId}
             <Button
               size="icon"
               variant="outline"
@@ -89,67 +90,38 @@ export default function Detail() {
         <div className="grid gap-3">
           <div className="font-semibold">Order Details</div>
           <ul className="grid gap-3">
-            <li className="flex items-center justify-between">
-              <span className="text-muted-foreground">
-                Glimmer Lamps x <span>2</span>
-              </span>
-              <span>$250.00</span>
-            </li>
+            {data.map((item, index) => (
+              <li key={index} className="flex items-center justify-between">
+                <span className="text-muted-foreground">
+                  {item.product.productstock.name.charAt(0).toUpperCase() +
+                    item.product.productstock.name.slice(1).toLowerCase()}{" "}
+                  x <span>{item.quantity}</span>
+                </span>
+                <span>${item.product.sellprice * item.quantity}</span>
+              </li>
+            ))}
           </ul>
           <Separator className="my-2" />
           <ul className="grid gap-3">
             <li className="flex items-center justify-between">
               <span className="text-muted-foreground">Subtotal</span>
-              <span>$299.00</span>
-            </li>
-            <li className="flex items-center justify-between">
-              <span className="text-muted-foreground">Shipping</span>
-              <span>$5.00</span>
+              <span>${subtotal.toFixed(2)}</span>
             </li>
             <li className="flex items-center justify-between">
               <span className="text-muted-foreground">Tax</span>
-              <span>$25.00</span>
+              <span>${tax.toFixed(2)}</span>
             </li>
             <li className="flex items-center justify-between font-semibold">
               <span className="text-muted-foreground">Total</span>
-              <span>$329.00</span>
+              <span>${total.toFixed(2)}</span>
             </li>
           </ul>
-        </div>
-        <Separator className="my-4" />
-        <div className="grid gap-3">
-          <div className="font-semibold">Payment Information</div>
-          <dl className="grid gap-3">
-            <div className="flex items-center justify-between">
-              <dt className="flex items-center gap-1 text-muted-foreground">
-                <CreditCard className="h-4 w-4" />
-                Visa
-              </dt>
-              <dd>**** **** **** 4532</dd>
-            </div>
-          </dl>
         </div>
       </CardContent>
       <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
         <div className="text-xs text-muted-foreground">
           Updated <time dateTime="2023-11-23">November 23, 2023</time>
         </div>
-        <Pagination className="ml-auto mr-0 w-auto">
-          <PaginationContent>
-            <PaginationItem>
-              <Button size="icon" variant="outline" className="h-6 w-6">
-                <ChevronLeft className="h-3.5 w-3.5" />
-                <span className="sr-only">Previous Order</span>
-              </Button>
-            </PaginationItem>
-            <PaginationItem>
-              <Button size="icon" variant="outline" className="h-6 w-6">
-                <ChevronRight className="h-3.5 w-3.5" />
-                <span className="sr-only">Next Order</span>
-              </Button>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
       </CardFooter>
     </Card>
   );

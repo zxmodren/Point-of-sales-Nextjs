@@ -10,7 +10,7 @@ export const fetchProduct = async ({ take = 5, skip = 0 }) => {
         id: true,
         productId: true,
         sellprice: true,
-        product:{
+        productstock:{
             select:{
               id:true,
                 name:true,
@@ -21,7 +21,7 @@ export const fetchProduct = async ({ take = 5, skip = 0 }) => {
         },
       },
       orderBy: {
-        product:{
+        productstock:{
             name:"asc",
         } 
       },
