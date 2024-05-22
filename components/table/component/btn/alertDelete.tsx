@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import axios from "axios";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { ReloadIcon } from "@radix-ui/react-icons";
 type Data = {
   id: string;
   productstock: {
@@ -76,16 +76,10 @@ export function DeleteAlertDialog({
             disabled={loading}
             className="text-gray-100">
             {loading ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 0.5,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                }}>
-                Loading...
-              </motion.div>
+              <>
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </>
             ) : (
               "Delete"
             )}

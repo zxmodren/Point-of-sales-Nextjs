@@ -1,6 +1,7 @@
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TransactionData } from "@/types/transaction";
-
+import { DialogEdit } from "./edit";
+import { AlertDialogDelete } from "./delete";
 interface TableBodyProps {
   data: TransactionData[];
 }
@@ -22,17 +23,23 @@ function TableBodyOrders({ data }: TableBodyProps) {
                   {item.productId}
                 </div>
               </TableCell>
-              <TableCell className="hidden sm:table-cell">
+              <TableCell className="hidden md:table-cell">
                 {item.product.productstock.cat.charAt(0).toUpperCase() +
                   item.product.productstock.cat.slice(1).toLowerCase()}
               </TableCell>
-              <TableCell className="hidden sm:table-cell">
+              <TableCell className="hidden md:table-cell">
                 $ {item.product.sellprice}
               </TableCell>
-              <TableCell className="hidden md:table-cell">
+              <TableCell className="hidden sm:table-cell">
                 {item.quantity}
               </TableCell>
-              <TableCell className="text-right">$ {totalPrice}</TableCell>
+              <TableCell className="hidden sm:table-cell">
+                $ {totalPrice}
+              </TableCell>
+              <TableCell className="text-right">
+                <DialogEdit data={item} />
+                <AlertDialogDelete data={item} />
+              </TableCell>
             </TableRow>
           );
         })}

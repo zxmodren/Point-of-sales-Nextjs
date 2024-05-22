@@ -1,17 +1,17 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useState } from 'react';
 interface RootLayoutProps {
   children: React.ReactNode;
 }
-import Link from "next/link";
-import { Menu, TriangleAlert } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import { ModeToggle } from "@/components/darkmode/darkmode";
-import { ThemeProvider } from "@/components/theme-provider";
-import Navbar from "@/components/dashboard/navbar";
-import { NavbarSheet } from "@/components/dashboard/NavbarSheet";
-import Bread from "@/components/dashboard/breadcrumb";
+import Link from 'next/link';
+import { Menu, TriangleAlert } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetTrigger } from '@/components/ui/sheet';
+import { ModeToggle } from '@/components/darkmode/darkmode';
+import { ThemeProvider } from '@/components/theme-provider';
+import Navbar from '@/components/dashboard/navbar';
+import { NavbarSheet } from '@/components/dashboard/NavbarSheet';
+import Bread from '@/components/dashboard/breadcrumb';
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <div className="bg-gray-300  dark:bg-black">

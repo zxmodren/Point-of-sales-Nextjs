@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   AlertDialog,
@@ -8,12 +8,12 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import axios from "axios";
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { AlertDialogContent } from "@radix-ui/react-alert-dialog";
+} from '@/components/ui/alert-dialog';
+import axios from 'axios';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { AlertDialogContent } from '@radix-ui/react-alert-dialog';
 
 export function PrintAlertDialog({
   open,
@@ -65,7 +65,8 @@ export function PrintAlertDialog({
           <AlertDialogAction
             onClick={handleDelete}
             disabled={loading}
-            className="text-gray-100">
+            className="text-gray-100"
+          >
             {loading ? (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -73,12 +74,13 @@ export function PrintAlertDialog({
                 transition={{
                   duration: 0.5,
                   repeat: Infinity,
-                  repeatType: "reverse",
-                }}>
+                  repeatType: 'reverse',
+                }}
+              >
                 Loading...
               </motion.div>
             ) : (
-              "Delete"
+              'Delete'
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

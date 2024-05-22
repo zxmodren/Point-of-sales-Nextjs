@@ -1,12 +1,13 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { cn } from "@/lib/utils";
 import React from "react";
 import { BentoGrid, BentoGridItem } from "../ui/bento-grid";
 import {
   IconBoxAlignRightFilled,
-  IconClipboardCopy,
-  IconFileBroken,
-  IconSignature,
+  IconClock,
+  IconCloud,
+  IconCalendarMonth,
   IconTableColumn,
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
@@ -62,12 +63,10 @@ const SkeletonFour = () => {
       initial="initial"
       animate="animate"
       whileHover="hover"
-      className="flex flex-1 w-full h-full min-h-[6rem] dark:bg-dot-white/[0.2] bg-dot-black/[0.2] flex-row space-x-2"
-    >
+      className="flex flex-1 w-full h-full min-h-[6rem] dark:bg-dot-white/[0.2] bg-dot-black/[0.2] flex-row space-x-2">
       <motion.div
         variants={first}
-        className="h-full w-1/3 rounded-2xl bg-gray-100 p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
-      >
+        className="h-full w-1/3 rounded-2xl bg-gray-100 p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center">
         <Boxes size={40} />
         <p className="sm:text-sm text-xs text-center font-semibold text-neutral-500 mt-4">
           Total Product
@@ -83,15 +82,13 @@ const SkeletonFour = () => {
         </p>
         <Badge
           variant="outline"
-          className="border border-green-700 px-2 py-0.5 mt-4"
-        >
+          className="border border-green-700 px-2 py-0.5 mt-4">
           <p className="text-green-400">$1000</p>
         </Badge>
       </motion.div>
       <motion.div
         variants={second}
-        className="h-full w-1/3 rounded-2xl bg-gray-100 p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
-      >
+        className="h-full w-1/3 rounded-2xl bg-gray-100 p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center">
         <Handshake size={40} />
         <p className="sm:text-sm text-xs text-center font-semibold text-neutral-500 mt-4">
           Total Product Sale
@@ -133,12 +130,10 @@ const SkeletonFive = () => {
     <motion.div
       initial="initial"
       whileHover="animate"
-      className="flex flex-1 w-full h-full min-h-[6rem] dark:bg-dot-white/[0.2] bg-dot-black/[0.2] flex-col space-y-2"
-    >
+      className="flex flex-1 w-full h-full min-h-[6rem] dark:bg-dot-white/[0.2] bg-dot-black/[0.2] flex-col space-y-2">
       <motion.div
         variants={variants}
-        className="flex flex-row rounded-2xl border border-neutral-100 dark:border-white/[0.2] p-2  items-start space-x-2 bg-white dark:bg-black"
-      >
+        className="flex flex-row rounded-2xl border border-neutral-100 dark:border-white/[0.2] p-2  items-start space-x-2 bg-white dark:bg-black">
         <Image
           src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
           alt="avatar"
@@ -153,8 +148,7 @@ const SkeletonFive = () => {
       </motion.div>
       <motion.div
         variants={variantsSecond}
-        className="flex flex-row rounded-full border border-neutral-100 dark:border-white/[0.2] p-2 items-center justify-end space-x-2 w-3/4 ml-auto bg-white dark:bg-black"
-      >
+        className="flex flex-row rounded-full border border-neutral-100 dark:border-white/[0.2] p-2 items-center justify-end space-x-2 w-3/4 ml-auto bg-white dark:bg-black">
         <p className="text-xs text-neutral-500">Use PHP.</p>
         <div className="h-6 w-6 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 flex-shrink-0" />
       </motion.div>
@@ -163,45 +157,33 @@ const SkeletonFive = () => {
 };
 const items = [
   {
-    title: "AI Content Generation",
-    description: (
-      <span className="text-sm">
-        Experience the power of AI in generating unique content.
-      </span>
-    ),
+    title: "Don't Forget To Rest Your Soul",
+    description: <span className="text-sm">Experience the power of time.</span>,
     header: <DigitalClock />,
     className: "md:col-span-1",
-    icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
+    icon: <IconClock className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Automated Proofreading",
+    title: "Human Can't Predict A Future",
     description: (
-      <span className="text-sm">
-        Let AI handle the proofreading of your documents.
-      </span>
+      <span className="text-sm">Don't forget bring you'r umberella.</span>
     ),
     header: <WeatherComponent />,
     className: "md:col-span-1",
-    icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
+    icon: <IconCloud className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Contextual Suggestions",
+    title: "Tomorrow is Tomorrow not Today",
     description: (
-      <span className="text-sm">
-        Get AI-powered suggestions based on your writing context.
-      </span>
+      <span className="text-sm">Don't forget you'r special schedule.</span>
     ),
     header: <DateComponent />,
     className: "md:col-span-1",
-    icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
+    icon: <IconCalendarMonth className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Sentiment Analysis",
-    description: (
-      <span className="text-sm">
-        Understand the sentiment of your text with AI analysis.
-      </span>
-    ),
+    title: "Analysis",
+    description: <span className="text-sm">Understand the sale analysis.</span>,
     header: <SkeletonFour />,
     className: "md:col-span-2",
     icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,

@@ -18,13 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Cross2Icon } from "@radix-ui/react-icons";
+import { Cross2Icon, ReloadIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import { CatProduct } from "@prisma/client";
 import { productSchema } from "@/schema";
 import { z } from "zod";
 import axios from "axios";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 export function SheetAdd({
@@ -70,7 +69,7 @@ export function SheetAdd({
     setLoading(true);
     try {
       const validatedData = productSchema.parse({
-        productName,
+        productName: productName,
         buyPrice: buyPriceNumber,
         sellPrice: sellPriceNumber,
         stockProduct: stockProductNumber,
@@ -108,9 +107,7 @@ export function SheetAdd({
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Add product</SheetTitle>
-          <SheetDescription>
-            Make changes to your product here. Click save when you're done.
-          </SheetDescription>
+          <SheetDescription>Add product your product here.</SheetDescription>
           <div
             onClick={handleCancel}
             className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
@@ -249,16 +246,10 @@ export function SheetAdd({
               disabled={loading}
               className="text-gray-100">
               {loading ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    duration: 0.5,
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                  }}>
-                  Loading...
-                </motion.div>
+                <>
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
               ) : (
                 "Add Product"
               )}

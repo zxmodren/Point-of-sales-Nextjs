@@ -1,38 +1,38 @@
-"use client";
-import * as React from "react";
+'use client';
+import { useState, useEffect, useRef } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Table } from "@/components/ui/table";
-import TableHeadOrders from "./component/Thead";
-import TableBodyOrders from "./component/Tbody";
-import FullscreenButton from "@/components/fullscreen/fullscreen";
-import Detail from "./component/detail";
-import { Button } from "@/components/ui/button";
-import { ReceiptText, Sheet, Plus, BadgePlus, Delete } from "lucide-react";
-import { DialogDemo } from "./component/dialog";
-import axios from "axios";
-import { TransactionData } from "@/types/transaction";
-import { useRouter } from "next/navigation";
-import eventBus from "@/lib/even";
+} from '@/components/ui/card';
+import { Table } from '@/components/ui/table';
+import TableHeadOrders from './component/Thead';
+import TableBodyOrders from './component/Tbody';
+import FullscreenButton from '@/components/fullscreen/fullscreen';
+import Detail from './component/detail';
+import { Button } from '@/components/ui/button';
+import { ReceiptText, Sheet, Plus, Trash2, Delete } from 'lucide-react';
+import { DialogAdd } from './component/dialogAdd';
+import axios from 'axios';
+import { TransactionData } from '@/types/transaction';
+import eventBus from '@/lib/even';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { AlertDialogDeletetransaction } from './component/dialogDelete';
 
 export function Orders() {
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [transactionId, setTransactionId] = React.useState<string | null>(null);
-  const [taxRate, setTaxRate] = React.useState<number>(0.1); // Tambahkan state untuk taxRate
-  const [transactionData, setTransactionData] = React.useState<
-    TransactionData[]
-  >([]);
-  const [showTable, setShowTable] = React.useState(true);
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const [dialogAddOpen, setDialogAddOpen] = useState(false);
+  const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
+  const [transactionId, setTransactionId] = useState<string | null>(null);
+  const [taxRate, setTaxRate] = useState<number>(0.1);
+  const [transactionData, setTransactionData] = useState<TransactionData[]>([]);
+  const [showTable, setShowTable] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const tableRef = useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    const savedTransactionId = localStorage.getItem("transactionId");
+  useEffect(() => {
+    const savedTransactionId = localStorage.getItem('transactionId');
     if (savedTransactionId) {
       setTransactionId(savedTransactionId);
     }
@@ -40,22 +40,37 @@ export function Orders() {
     let isMounted = true;
 
     const fetchTransactionData = async () => {
-      if (transactionId && isMounted) {
+      if (isMounted) {
         try {
+          if (!transactionId) {
+            setTransactionData([]);
+            return;
+          }
+
           const response = await axios.get(
             `/api/transactions/${transactionId}`
           );
           if (response.status === 200 && isMounted) {
             const data = response.data;
             setTransactionData(Array.isArray(data) ? data : [data]);
+          } else if (response.status === 404 && isMounted) {
+            setTransactionData([]);
           } else {
-            console.error("Failed to fetch transaction data");
+            console.error('Failed to fetch transaction data');
           }
         } catch (error) {
-          console.error(
-            "An error occurred while fetching transaction data:",
-            error
-          );
+          if (axios.isAxiosError(error)) {
+            if (error.response && error.response.status === 404 && isMounted) {
+              setTransactionData([]);
+            } else {
+              console.error(
+                'An error occurred while fetching transaction data:',
+                error
+              );
+            }
+          } else {
+            console.error('An unexpected error occurred:', error);
+          }
         }
       }
     };
@@ -66,41 +81,50 @@ export function Orders() {
       fetchTransactionData();
     };
 
-    eventBus.on("fetchTransactionData", handleEventBusEvent);
-
+    eventBus.on('fetchTransactionData', handleEventBusEvent);
     return () => {
       isMounted = false;
-      eventBus.removeListener("fetchTransactionData", handleEventBusEvent);
+      eventBus.removeListener('fetchTransactionData', handleEventBusEvent);
     };
   }, [transactionId]);
 
   const createTransaction = async () => {
-    try {
-      const response = await axios.post("/api/transactions");
-      if (response.status === 201) {
-        const { id } = response.data;
-        localStorage.setItem("transactionId", id);
-        setTransactionId(id);
-      } else {
-        console.error("Failed to create transaction");
+    if (!transactionId) {
+      setLoading(true);
+      try {
+        const response = await axios.post('/api/transactions');
+        if (response.status === 201) {
+          const { id } = response.data;
+          localStorage.setItem('transactionId', id);
+          setTransactionId(id);
+          setLoading(false);
+          setDialogAddOpen(true);
+        } else {
+          console.error('Failed to create transaction');
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
       }
-    } catch (error) {
-      console.error("An error occurred:", error);
     }
+    setDialogAddOpen(true);
   };
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
+  const handleDialogAddOpen = () => {
+    createTransaction();
   };
 
-  const deleteTransactionId = () => {
-    localStorage.removeItem("transactionId");
-    setTransactionId(null);
+  const handleDialogDeleteOpen = () => {
+    setDialogDeleteOpen(true);
   };
 
-  const handleTaxRateChange = (newTaxRate: number) => {
-    setTaxRate(newTaxRate);
+  const handleDialogAddClose = () => {
+    setDialogAddOpen(false);
   };
+
+  const handleDialogDeleteClose = async () => {
+    setDialogDeleteOpen(false);
+  };
+
   return (
     <div ref={tableRef} className="w-full h-full">
       <Card className="h-full w-full flex flex-col">
@@ -114,7 +138,8 @@ export function Orders() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setShowTable(!showTable)}>
+                  onClick={() => setShowTable(!showTable)}
+                >
                   {showTable ? <ReceiptText /> : <Sheet />}
                 </Button>
               </div>
@@ -122,40 +147,21 @@ export function Orders() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setDialogOpen(true)}>
-                  <Plus />
+                  disabled={loading}
+                  onClick={handleDialogAddOpen}
+                >
+                  {loading ? <ReloadIcon className="animate-spin" /> : <Plus />}
                 </Button>
               </div>
               <div className="pl-1">
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => createTransaction()}>
-                  <BadgePlus />
+                  onClick={handleDialogDeleteOpen}
+                  disabled={!transactionId}
+                >
+                  <Trash2 />
                 </Button>
-              </div>
-              <div className="pl-1">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => deleteTransactionId()}>
-                  <Delete />
-                </Button>
-              </div>
-              <div className="pl-1">
-                <label htmlFor="taxRate" className="pr-2">
-                  Tax Rate:
-                </label>
-                <input
-                  id="taxRate"
-                  type="number"
-                  step="0.01"
-                  value={taxRate}
-                  onChange={(e) =>
-                    handleTaxRateChange(parseFloat(e.target.value))
-                  }
-                  className="border border-gray-300 rounded p-1"
-                />
               </div>
             </div>
           </CardHeader>
@@ -170,13 +176,20 @@ export function Orders() {
             <Detail
               data={transactionData}
               transactionId={transactionId}
-              taxRate={taxRate} // Tambahkan taxRate ke komponen Detail
+              taxRate={taxRate}
+              setTransactionId={setTransactionId}
             />
           )}
-          <DialogDemo
-            open={dialogOpen}
-            onClose={handleDialogClose}
+          <DialogAdd
+            open={dialogAddOpen}
+            onClose={handleDialogAddClose}
             transactionId={transactionId}
+          />
+          <AlertDialogDeletetransaction
+            open={dialogDeleteOpen}
+            onClose={handleDialogDeleteClose}
+            transactionId={transactionId}
+            setTransactionId={setTransactionId}
           />
         </CardContent>
       </Card>

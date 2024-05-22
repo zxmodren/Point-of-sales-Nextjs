@@ -63,3 +63,58 @@
       @apply bg-background text-foreground;
     }
   }
+
+
+  @media print {
+    .print\:w-full {
+      width: 100%;
+    }
+    .print\:max-w-\[80mm\] {
+      max-width: 80mm;
+    }
+    .print\:p-4 {
+      padding: 1rem;
+    }
+    .print\:border {
+      border: 1px solid #000;
+    }
+    .print\:text-\[12px\] {
+      font-size: 12px;
+    }
+    .print\:font-mono {
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .print\:text-center {
+      text-align: center;
+    }
+    .print\:font-bold {
+      font-weight: bold;
+    }
+    .print\:border-dashed {
+      border-style: dashed;
+    }
+    .print\:py-2 {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+    .print\:mt-2 {
+      margin-top: 0.5rem;
+    }
+    .print\:flex {
+      display: flex;
+    }
+    .print\:justify-between {
+      justify-content: space-between;
+    }
+    .print\:border-t {
+      border-top-width: 1px;
+    }
+    .print\:border-b {
+      border-bottom-width: 1px;
+    }
+    .print\:my-2 {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+  

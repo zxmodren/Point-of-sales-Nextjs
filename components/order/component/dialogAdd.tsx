@@ -1,32 +1,31 @@
 /* eslint-disable react/no-unescaped-entities */
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import eventBus from "@/lib/even";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import * as DialogR from "@radix-ui/react-dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
-import axios from "axios";
+} from '@/components/ui/dialog';
+import eventBus from '@/lib/even';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import * as DialogR from '@radix-ui/react-dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
+import axios from 'axios';
 import {
   DropdownMenu,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
-import { onsaleSchema } from "@/schema";
-import { z } from "zod";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/dropdown-menu';
+import { DropdownMenuContent } from '@radix-ui/react-dropdown-menu';
+import { onsaleSchema } from '@/schema';
+import { z } from 'zod';
 type ProductDetail = {
   sellprice: number;
 };
@@ -40,7 +39,7 @@ type Data = {
   cat: string;
   Product: ProductDetail[];
 };
-export function DialogDemo({
+export function DialogAdd({
   open,
   onClose,
   transactionId,
@@ -49,38 +48,39 @@ export function DialogDemo({
   onClose: () => void;
   transactionId: string | null;
 }) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [qTy, setqTy] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [qTy, setqTy] = useState('');
   const [productStocks, setProductStocks] = useState<Data[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] = useState<string>('');
   const [selectedResult, setSelectedResult] = useState<Data | null>(null);
   const [error, setError] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
   const qTyNumber = parseFloat(qTy) || 0;
-  const router = useRouter();
   useEffect(() => {
     const fetchProductStocks = async () => {
       try {
-        const response = await axios.get<Data[]>("/api/storage");
+        const response = await axios.get<Data[]>('/api/storage');
         setProductStocks(response.data);
       } catch (error) {
-        console.error("Error fetching product stocks:", error);
+        console.error('Error fetching product stocks:', error);
       }
     };
 
     fetchProductStocks();
 
-    if (searchTerm === "") {
+    if (searchTerm === '') {
       setSelectedResult(null);
-      setSelectedProduct("");
+      setSelectedProduct('');
     }
   }, [searchTerm]);
 
   const handleCancel = () => {
-    setSelectedProduct("");
+    setSelectedProduct('');
     setSelectedResult(null);
-    setSearchTerm("");
+    setSearchTerm('');
+    setqTy('');
     onClose();
+    setError({});
   };
   const handleAdd = async () => {
     setLoading(true);
@@ -92,18 +92,21 @@ export function DialogDemo({
       });
 
       // Send validated data using axios
-      const response = await axios.post("/api/onsale", validatedData);
+      const response = await axios.post('/api/onsale', validatedData);
 
       // If no errors, close the dialog
       onClose();
-
+      setSelectedProduct('');
+      setSelectedResult(null);
+      setSearchTerm('');
+      setqTy('');
       // Emit an event to trigger fetchTransactionData
-      eventBus.emit("fetchTransactionData");
+      eventBus.emit('fetchTransactionData');
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
         error.errors.forEach((err) => {
-          const path = err.path.join(".");
+          const path = err.path.join('.');
           fieldErrors[path] = err.message;
         });
         setError((prevError) => ({
@@ -138,7 +141,8 @@ export function DialogDemo({
                   type="button"
                   size="icon"
                   value={searchTerm}
-                  className="absolute left-2.5 top-2.5 h-4 w-4 bg-transparent">
+                  className="absolute left-2.5 top-2.5 h-4 w-4 bg-transparent"
+                >
                   <Search />
                 </Button>
                 <Input
@@ -157,7 +161,9 @@ export function DialogDemo({
                       null
                   );
                   setSelectedProduct(value);
-                }}>
+                  setError((prevError) => ({ ...prevError, productId: '' }));
+                }}
+              >
                 {productStocks
                   .filter(
                     (product) =>
@@ -181,7 +187,8 @@ export function DialogDemo({
             {selectedResult && (
               <div
                 key={selectedResult.id}
-                className="grid grid-cols-4 items-center gap-4">
+                className="grid grid-cols-4 items-center gap-4"
+              >
                 <Label htmlFor="name" className="text-right">
                   Name
                 </Label>
@@ -201,7 +208,7 @@ export function DialogDemo({
                   value={
                     selectedResult.Product && selectedResult.Product.length > 0
                       ? selectedResult.Product[0].sellprice
-                      : ""
+                      : ''
                   }
                   readOnly
                 />
@@ -217,7 +224,7 @@ export function DialogDemo({
                 type="number"
                 onChange={(e) => {
                   setqTy(e.target.value);
-                  setError((prevError) => ({ ...prevError, qTy: "" }));
+                  setError((prevError) => ({ ...prevError, qTy: '' }));
                 }}
               />
               {error?.qTy && (
@@ -232,20 +239,21 @@ export function DialogDemo({
           <Button type="button" variant="secondary" onClick={handleCancel}>
             Close
           </Button>
-          <Button type="submit" onClick={handleAdd} disabled={loading}>
+          <Button
+            type="submit"
+            onClick={handleAdd}
+            disabled={loading}
+            className="text-gray-100"
+          >
             {loading ? (
               <>
                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 Please wait
               </>
             ) : (
-              "Add"
+              'Add'
             )}
           </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.refresh()}></Button>
         </DialogFooter>
       </DialogR.Content>
     </Dialog>

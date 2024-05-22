@@ -75,6 +75,5 @@ model Transaction {
   totalAmount Decimal?
   createdAt   DateTime        @default(now())
   isComplete  Boolean         @default(false)
-  ref         String?
   products    OnSaleProduct[]
 }

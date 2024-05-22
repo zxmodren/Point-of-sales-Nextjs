@@ -18,13 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Cross2Icon } from "@radix-ui/react-icons";
+import { Cross2Icon, ReloadIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import { CatProduct } from "@prisma/client";
 import { productSchema } from "@/schema";
 import { z } from "zod";
 import axios from "axios";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 type Data = {
   id: string;
@@ -98,7 +97,7 @@ export function SheetEdit({
     setLoading(true);
     try {
       const validatedData = productSchema.parse({
-        productName,
+        productName: productName,
         buyPrice: buyPriceNumber,
         sellPrice: sellPriceNumber,
         stockProduct: stockProductNumber,
@@ -277,18 +276,12 @@ export function SheetEdit({
               disabled={loading}
               className="text-gray-100">
               {loading ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    duration: 0.5,
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                  }}>
-                  Loading...
-                </motion.div>
+                <>
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
               ) : (
-                "Save Change"
+                "Save change"
               )}
             </Button>
           </SheetClose>

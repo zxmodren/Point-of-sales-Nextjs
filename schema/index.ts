@@ -37,9 +37,18 @@ export const onsaleSchema = z.object({
     productId: z
     .string()
     .nonempty("Select Product"),
-    qTy: z.number().positive("Buy price must be a positive number").min(1, "Buy price min 1"),
+    qTy: z.number().positive("Qty must be a positive number").min(1, "Qty min 1"),
     transactionId: z.string()
     .nonempty("Transaction Id is Empty"),
+    
+})
+export const orderSchema = z.object({
+    qTy: z.number().positive("Qty must be a positive number").min(1, "Qty min 1"),
+    
+})
+
+export const checkoutSchema = z.object({
+  totalAmount: z.number().positive("Total Price must be a positive number").min(1, "Make A Order Please"),
     
 })
 

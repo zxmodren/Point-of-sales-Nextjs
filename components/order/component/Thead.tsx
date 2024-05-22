@@ -6,10 +6,11 @@ function TableHeadOrders() {
       <TableHeader>
         <TableRow>
           <TableHead>Product</TableHead>
-          <TableHead className="hidden sm:table-cell">Type</TableHead>
-          <TableHead className="hidden sm:table-cell">Price</TableHead>
-          <TableHead className="hidden md:table-cell">Qty</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="hidden md:table-cell">Type</TableHead>
+          <TableHead className="hidden md:table-cell">Price</TableHead>
+          <TableHead className="hidden sm:table-cell">Qty</TableHead>
+          <TableHead className="hidden sm:table-cell">Amount</TableHead>
+          <TableHead className="text-right"></TableHead>
         </TableRow>
       </TableHeader>
     </>
