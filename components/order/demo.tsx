@@ -8,18 +8,18 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Table } from '@/components/ui/table';
-import TableHeadOrders from './component/Thead';
-import TableBodyOrders from './component/Tbody';
+import TableHeadOrders from './components/Thead';
+import TableBodyOrders from './components/Tbody';
 import FullscreenButton from '@/components/fullscreen/fullscreen';
-import Detail from './component/detail';
+import Detail from './components/detail';
 import { Button } from '@/components/ui/button';
 import { ReceiptText, Sheet, Plus, Trash2, Delete } from 'lucide-react';
-import { DialogAdd } from './component/dialogAdd';
+import { DialogAdd } from './components/dialogAdd';
 import axios from 'axios';
 import { TransactionData } from '@/types/transaction';
 import eventBus from '@/lib/even';
 import { ReloadIcon } from '@radix-ui/react-icons';
-import { AlertDialogDeletetransaction } from './component/dialogDelete';
+import { AlertDialogDeletetransaction } from './components/dialogDelete';
 
 export function Orders() {
   const [dialogAddOpen, setDialogAddOpen] = useState(false);

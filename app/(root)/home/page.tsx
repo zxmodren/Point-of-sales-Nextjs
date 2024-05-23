@@ -1,9 +1,9 @@
-import React from "react";
-import { BentoGridThirdDemo } from "@/components/bento/bentodemo";
+import React from 'react';
+import { BentoGridHome } from '@/components/bento/bentodemo';
 const page = () => {
   return (
     <div className="w-full">
-      <BentoGridThirdDemo />
+      <BentoGridHome />
     </div>
   );
 };

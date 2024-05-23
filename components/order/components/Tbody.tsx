@@ -1,7 +1,7 @@
-import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { TransactionData } from "@/types/transaction";
-import { DialogEdit } from "./edit";
-import { AlertDialogDelete } from "./delete";
+import { TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { TransactionData } from '@/types/transaction';
+import { DialogEdit } from './edit';
+import { AlertDialogDelete } from './delete';
 interface TableBodyProps {
   data: TransactionData[];
 }

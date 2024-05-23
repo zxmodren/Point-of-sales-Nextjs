@@ -5,17 +5,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 
-import { Table } from "@/components/ui/table";
-import TableHeadFeed from "./component/TableHead";
-import TableBodyFeed from "./component/TableBody";
-import { PaginationDemo } from "./component/pagination";
-import { fetchProduct } from "@/data/product";
-import { PageProps } from "@/types/paginations";
-import AddButtonComponent from "./component/btn/addProduct";
+import { Table } from '@/components/ui/table';
+import TableHeadProduct from './component/TableHead';
+import TableBodyProduct from './component/TableBody';
+import { PaginationDemo } from './component/pagination';
+import { fetchProduct } from '@/data/product';
+import { PageProps } from '@/types/paginations';
+import AddButtonComponent from './component/btn/addProduct';
 
-export default async function TableFeed(props: PageProps) {
+export default async function TableProduct(props: PageProps) {
   const pageNumber = Number(props?.searchParams?.page || 1); // Get the page number. Default to 1 if not provided.
   const take = 5;
   const skip = (pageNumber - 1) * take;
@@ -36,14 +36,13 @@ export default async function TableFeed(props: PageProps) {
       </div>
       <CardContent>
         <Table>
-          <TableHeadFeed />
-          <TableBodyFeed data={data} />
+          <TableHeadProduct />
+          <TableBodyProduct data={data} />
         </Table>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="mt-auto">
         <PaginationDemo {...metadata} />
       </CardFooter>
-      {/* <SheetAdd open={addOpen} onClose={handleAddClose} /> */}
     </Card>
   );
 }
