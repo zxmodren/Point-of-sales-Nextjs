@@ -32,7 +32,7 @@ const TableBodyProduct: React.FC<TableBodyProductProps> = ({ data }) => {
     setTimeout(() => {
       setProductData(data);
       setLoading(false);
-    }, 2000); // Simulate a delay
+    }, 1000); // Simulate a delay
   }, [data]);
 
   return (
