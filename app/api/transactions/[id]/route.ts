@@ -60,23 +60,64 @@ export const PATCH = async (
   { params }: { params: { id: string } }
 ) => {
   try {
+    const prisma = new PrismaClient();
+
     const body = await request.json();
 
-    const editProduct = await prisma.transaction.update({
+    const productIds = body.productId.split(',').map((id: string) => id.trim());
+    const quantities = Array.isArray(body.qTy)
+      ? body.qTy.map(parseFloat)
+      : [parseFloat(body.qTy)];
+
+    if (productIds.length !== quantities.length) {
+      throw new Error('Product IDs and quantities must have the same length');
+    }
+
+    const updatedStocks = [];
+    for (let i = 0; i < productIds.length; i++) {
+      const productId = productIds[i];
+      const quantity = quantities[i];
+
+      const existingStock = await prisma.productStock.findFirst({
+        where: { id: productId },
+      });
+
+      if (!existingStock) {
+        throw new Error(`Stock not found for product ID: ${productId}`);
+      }
+
+      const updatedStock = await prisma.productStock.update({
+        where: { id: productId },
+        data: { stock: existingStock.stock - quantity },
+      });
+
+      updatedStocks.push(updatedStock);
+    }
+
+    const totalAmount = parseFloat(body.totalAmount);
+    if (isNaN(totalAmount)) {
+      throw new Error('Invalid totalAmount');
+    }
+
+    const editTransaction = await prisma.transaction.update({
       where: {
         id: String(params.id),
       },
       data: {
-        totalAmount: body.totalAmount,
+        totalAmount,
         isComplete: true,
       },
     });
 
-    return NextResponse.json(editProduct, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  } finally {
     await prisma.$disconnect();
+
+    return NextResponse.json(
+      { editTransaction, updatedStocks },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    console.error('Error:', error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 };
 

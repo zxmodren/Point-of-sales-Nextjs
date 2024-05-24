@@ -17,7 +17,7 @@ import { TransactionData } from '@/types/transaction';
 import axios from 'axios';
 import { z } from 'zod';
 import { useState } from 'react';
-import { checkoutSchema } from '@/schema';
+
 import eventBus from '@/lib/even';
 
 interface DetailProps {
@@ -45,7 +45,9 @@ export default function Detail({
   const tax = subtotal * (taxRate / 100);
   const total = subtotal + tax;
   const totalNumber = parseFloat(String(total)) || 0;
-  // Get the current date
+  const qTyNumber = data.map((item) => parseFloat(String(item.quantity)));
+  const productIds = data.map((item) => item.productId).join(', ');
+
   const currentDate = format(new Date(), 'MMMM dd, yyyy');
 
   const handlePrint = useReactToPrint({
@@ -63,20 +65,22 @@ export default function Detail({
     setLoading(true);
     try {
       // Handle checkout
-      const validatedData = checkoutSchema.parse({
+      const response = await axios.patch(`/api/transactions/${transactionId}`, {
         totalAmount: totalNumber,
+        qTy: qTyNumber,
+        productId: productIds,
       });
-      const response = await axios.patch(
-        `/api/transactions/${transactionId}`,
-        validatedData
-      );
+
       handlePrint();
+
       localStorage.removeItem('transactionId');
       setTransactionId(null);
+
       eventBus.emit('fetchTransactionData');
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
+        console.error('Validation errors:', error.errors);
         error.errors.forEach((err) => {
           const path = err.path.join('.');
           fieldErrors[path] = err.message;
@@ -86,7 +90,7 @@ export default function Detail({
           ...fieldErrors,
         }));
       } else {
-        console.error(error);
+        console.error('Error during checkout:', error);
       }
     } finally {
       setLoading(false);
