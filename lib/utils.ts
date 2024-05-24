@@ -5,32 +5,26 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const generatePagination = (
-  currentPage: number,
-  totalPages: number
-): (number | string)[] => {
-  const delta = 1;
-  let pages: (number | string)[] = [];
-
-  for (
-    let i = Math.max(2, currentPage - delta);
-    i <= Math.min(totalPages - 1, currentPage + delta);
-    i++
-  ) {
-    pages.push(i);
+export const generatePagination = (currentPage: number, totalPages: number) => {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
 
-  if (currentPage - delta > 2) {
-    pages = [1, '...', ...pages];
-  } else if (currentPage - delta === 2) {
-    pages = [1, ...pages];
+  if (currentPage <= 3) {
+    return [1, 2, 3, '...', totalPages - 1, totalPages];
   }
 
-  if (totalPages - currentPage > delta) {
-    pages.push('...', totalPages);
-  } else if (totalPages - currentPage === delta) {
-    pages.push(totalPages);
+  if (currentPage >= totalPages - 2) {
+    return [1, 2, 3, '...', totalPages - 2, totalPages - 1, totalPages];
   }
 
-  return pages;
+  return [
+    1,
+    '...',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    '...',
+    totalPages,
+  ];
 };

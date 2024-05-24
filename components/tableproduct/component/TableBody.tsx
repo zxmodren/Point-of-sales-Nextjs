@@ -38,7 +38,7 @@ const TableBodyProduct: React.FC<TableBodyProductProps> = ({ data }) => {
   return (
     <TableBody>
       {loading
-        ? Array.from({ length: 9 }).map((_, i) => <SkeletonRow key={i} />)
+        ? Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} />)
         : productData.map((item) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium pl-4">

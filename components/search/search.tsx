@@ -16,17 +16,20 @@ export function SearchInput({ search }: { search?: string }) {
   const [query] = useDebounce(text, 750);
 
   useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
+    if (!initialRender.current) {
+      if (!query && !search) {
+        return;
+      }
 
-    if (!query) {
-      router.push(`${pathname}`);
+      if (!query) {
+        router.push(`${pathname}`);
+      } else {
+        router.push(`${pathname}?search=${query}`);
+      }
     } else {
-      router.push(`${pathname}?search=${query}`);
+      initialRender.current = false;
     }
-  }, [query, pathname, router]);
+  }, [query, pathname, router, search]);
   return (
     <>
       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />

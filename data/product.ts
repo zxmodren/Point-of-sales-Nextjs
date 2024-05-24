@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 
 export const fetchProduct = async ({
-  take = 9,
+  take = 5,
   skip = 0,
   query,
 }: {

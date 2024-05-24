@@ -17,7 +17,7 @@ import AddButtonComponent from './component/btn/addProduct';
 import { SearchInput } from '@/components/search/search';
 export default async function TableProduct(props: PageProps) {
   const pageNumber = Number(props?.searchParams?.page || 1); // Get the page number. Default to 1 if not provided.
-  const take = 9;
+  const take = 5;
   const skip = (pageNumber - 1) * take;
   const search =
     typeof props?.searchParams?.search === 'string'

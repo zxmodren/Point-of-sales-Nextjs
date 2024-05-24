@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 
 export const fetchRecords = async ({
-  take = 9,
+  take = 5,
   skip = 0,
   query,
 }: {
@@ -31,7 +31,7 @@ export const fetchRecords = async ({
         },
       },
       orderBy: {
-        id: 'asc',
+        createdAt: 'asc',
       },
     });
 
