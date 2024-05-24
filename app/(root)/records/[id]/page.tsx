@@ -1,5 +1,5 @@
 'use client';
-import { Copy, Printer } from 'lucide-react';
+import { Printer } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -15,10 +15,13 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { TransactionData } from '@/types/transaction';
 import { useReactToPrint } from 'react-to-print';
+import { useRouter } from 'next/navigation';
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function DetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [transactionData, setTransactionData] = useState<TransactionData[]>([]);
   const [printing, setPrinting] = useState(false);
+  const route = useRouter();
   const componentRef = useRef<HTMLDivElement>(null);
   let taxRate = 10;
   let subtotal = 0;
@@ -27,6 +30,10 @@ export default function Page({ params }: { params: { id: string } }) {
   });
   const tax = subtotal * (taxRate / 100);
   const total = subtotal + tax;
+
+  const handleRedirect = () => {
+    route.push(`/_error`);
+  };
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -48,13 +55,13 @@ export default function Page({ params }: { params: { id: string } }) {
           if (!params.id) {
             return;
           }
-
           const response = await axios.get(`/api/transactions/${params.id}`);
           if (response.status === 200 && isMounted) {
             const data = response.data;
             setTransactionData(Array.isArray(data) ? data : [data]);
           } else if (response.status === 404 && isMounted) {
             setTransactionData([]);
+            handleRedirect();
           } else {
             console.error('Failed to fetch transaction data');
           }
@@ -62,6 +69,7 @@ export default function Page({ params }: { params: { id: string } }) {
           if (axios.isAxiosError(error)) {
             if (error.response && error.response.status === 404 && isMounted) {
               setTransactionData([]);
+              handleRedirect();
             } else {
               console.error(
                 'An error occurred while fetching transaction data:',

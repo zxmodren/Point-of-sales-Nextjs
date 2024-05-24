@@ -1,8 +1,3 @@
-import Image from 'next/image';
-import { File, ListFilter, MoreHorizontal, PlusCircle } from 'lucide-react';
-
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -12,11 +7,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { Table } from '@/components/ui/table';
 import TableHeadRecords from './components/TableHead';
 import TableBodyRecords from './components/TableBody';
 import { fetchRecords } from '@/data/records';
 import { PageProps } from '@/types/paginations';
+import { PaginationDemo } from '@/components/paginations/pagination';
+import { SearchInput } from '@/components/search/search';
 
 interface Product {
   id: string;
@@ -35,9 +32,14 @@ interface Recordsdata {
 
 export async function Records(props: PageProps) {
   const pageNumber = Number(props?.searchParams?.page || 1); // Get the page number. Default to 1 if not provided.
-  const take = 5;
+  const take = 9;
   const skip = (pageNumber - 1) * take;
-  const { data, metadata } = await fetchRecords({ take, skip });
+  const search =
+    typeof props?.searchParams?.search === 'string'
+      ? props?.searchParams?.search
+      : undefined;
+
+  const { data, metadata } = await fetchRecords({ take, skip, query: search });
   const convertedData: Recordsdata[] = data.map((item) => ({
     totalQuantity: item.totalQuantity,
     id: item.id,
@@ -48,10 +50,17 @@ export async function Records(props: PageProps) {
   }));
   return (
     <Card x-chunk="dashboard-06-chunk-0" className="h-full flex flex-col">
-      <CardHeader>
-        <CardTitle>Records</CardTitle>
-        <CardDescription>Records of Trasactions.</CardDescription>
-      </CardHeader>
+      <div className="flex items-center justify-between">
+        <div>
+          <CardHeader>
+            <CardTitle>Products</CardTitle>
+            <CardDescription>Manage your products.</CardDescription>
+          </CardHeader>
+        </div>
+        <div className="relative ml-auto mr-4 flex-1 md:grow-0">
+          <SearchInput search={search} />
+        </div>
+      </div>
       <CardContent className="flex-grow">
         <Table>
           <TableHeadRecords />
@@ -59,9 +68,7 @@ export async function Records(props: PageProps) {
         </Table>
       </CardContent>
       <CardFooter className="mt-auto">
-        <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>32</strong> products
-        </div>
+        <PaginationDemo {...metadata} />
       </CardFooter>
     </Card>
   );

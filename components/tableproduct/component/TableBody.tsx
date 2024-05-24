@@ -38,19 +38,9 @@ const TableBodyProduct: React.FC<TableBodyProductProps> = ({ data }) => {
   return (
     <TableBody>
       {loading
-        ? Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} />)
+        ? Array.from({ length: 9 }).map((_, i) => <SkeletonRow key={i} />)
         : productData.map((item) => (
             <TableRow key={item.id}>
-              <TableCell className="hidden sm:table-cell pl-4">
-                <Image
-                  alt="Product image"
-                  className="aspect-square rounded-md object-cover"
-                  height="64"
-                  src="/bank-card-svgrepo-com.svg"
-                  width="64"
-                  loading="lazy"
-                />
-              </TableCell>
               <TableCell className="font-medium pl-4">
                 {item.productstock.name}
               </TableCell>

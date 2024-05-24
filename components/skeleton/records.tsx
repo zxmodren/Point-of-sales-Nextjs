@@ -5,14 +5,13 @@ import '@/styles/skeleton.css'; // Pastikan path ini sesuai dengan lokasi file C
 const SkeletonRecords: React.FC = () => {
   const variants = {
     initial: {
-      width: '100%',
+      opacity: 0.5,
     },
     animate: {
-      width: ['100%', '80%', '100%'],
+      opacity: [0.5, 1, 0.5],
       transition: {
         duration: 1,
         repeat: Infinity,
-        ease: 'easeInOut',
       },
     },
   };
@@ -21,7 +20,7 @@ const SkeletonRecords: React.FC = () => {
     <TableRow>
       <TableCell className="font-medium">
         <motion.div
-          className="h-6 skeleton"
+          className="h-8 skeleton"
           variants={variants}
           initial="initial"
           animate="animate"
@@ -29,23 +28,7 @@ const SkeletonRecords: React.FC = () => {
       </TableCell>
       <TableCell className="font-medium">
         <motion.div
-          className="h-6 skeleton"
-          variants={variants}
-          initial="initial"
-          animate="animate"
-        ></motion.div>
-      </TableCell>
-      <TableCell>
-        <motion.div
-          className="h-6 skeleton"
-          variants={variants}
-          initial="initial"
-          animate="animate"
-        ></motion.div>
-      </TableCell>
-      <TableCell>
-        <motion.div
-          className="h-6 skeleton"
+          className="h-8 skeleton"
           variants={variants}
           initial="initial"
           animate="animate"
@@ -53,14 +36,35 @@ const SkeletonRecords: React.FC = () => {
       </TableCell>
       <TableCell className="hidden md:table-cell">
         <motion.div
-          className="h-6 skeleton"
+          className="h-8 skeleton"
           variants={variants}
           initial="initial"
           animate="animate"
         ></motion.div>
       </TableCell>
       <TableCell>
-        <div className="w-10 h-6 skeleton"></div>
+        <motion.div
+          className="h-8 skeleton"
+          variants={variants}
+          initial="initial"
+          animate="animate"
+        ></motion.div>
+      </TableCell>
+      <TableCell className="hidden md:table-cell">
+        <motion.div
+          className="h-8 skeleton"
+          variants={variants}
+          initial="initial"
+          animate="animate"
+        ></motion.div>
+      </TableCell>
+      <TableCell>
+        <motion.div
+          className="w-10 h-8 skeleton"
+          variants={variants}
+          initial="initial"
+          animate="animate"
+        ></motion.div>
       </TableCell>
     </TableRow>
   );

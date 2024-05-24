@@ -1,9 +1,20 @@
 import { db } from '@/lib/db';
 
-export const fetchRecords = async ({ take = 5, skip = 0 }) => {
+export const fetchRecords = async ({
+  take = 9,
+  skip = 0,
+  query,
+}: {
+  query?: string;
+  take: number;
+  skip: number;
+}) => {
   'use server';
   try {
     const results = await db.transaction.findMany({
+      where: {
+        id: { contains: query, mode: 'insensitive' },
+      },
       skip,
       take,
       select: {

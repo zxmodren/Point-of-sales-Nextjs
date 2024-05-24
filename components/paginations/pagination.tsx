@@ -1,28 +1,32 @@
-"use client";
+'use client';
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from '@/components/ui/pagination';
 
-import { usePathname, useSearchParams } from "next/navigation";
-import { generatePagination } from "@/lib/utils";
+import { usePathname, useSearchParams } from 'next/navigation';
+import { generatePagination } from '@/lib/utils';
 
 export function PaginationDemo({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get("page")) || 1;
+  const currentPage = Number(searchParams.get('page')) || 1;
 
   const createPageURL = (pageNumber: string | number) => {
     const params = new URLSearchParams(searchParams);
-    params.set("page", pageNumber.toString());
+    params.set('page', pageNumber.toString());
     return `${pathname}?${params.toString()}`;
   };
   const allPages = generatePagination(currentPage, totalPages);
+
+  const visiblePages = allPages
+    .filter((page) => typeof page === 'number')
+    .slice(0, 4);
+
   return (
     <Pagination>
       <PaginationContent>
@@ -34,7 +38,7 @@ export function PaginationDemo({ totalPages }: { totalPages: number }) {
             hidden={currentPage === 1}
           />
         </PaginationItem>
-        {allPages.map((page, index) => (
+        {visiblePages.map((page, index) => (
           <PaginationItem key={index}>
             <PaginationLink
               href={createPageURL(page)}

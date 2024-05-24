@@ -5,9 +5,6 @@ function TableHeadProduct() {
     <>
       <TableHeader>
         <TableRow>
-          <TableHead className="hidden w-[100px] sm:table-cell p-4">
-            <span className="sr-only">Image</span>
-          </TableHead>
           <TableHead className="p-4">Name</TableHead>
           <TableHead className="p-4">Category</TableHead>
           <TableHead className="p-4">Sell Price</TableHead>
