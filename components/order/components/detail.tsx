@@ -19,6 +19,7 @@ import { z } from 'zod';
 import { useState } from 'react';
 
 import eventBus from '@/lib/even';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 interface DetailProps {
   data: TransactionData[];
@@ -37,7 +38,7 @@ export default function Detail({
   const [loading, setLoading] = useState(false);
   const [printing, setPrinting] = useState(false);
   const [error, setError] = useState<{ [key: string]: string }>({});
-  // Calculate subtotal, tax, and total
+
   let subtotal = 0;
   data.forEach((item) => {
     subtotal += item.product.sellprice * item.quantity;
@@ -47,7 +48,6 @@ export default function Detail({
   const totalNumber = parseFloat(String(total)) || 0;
   const qTyNumber = data.map((item) => parseFloat(String(item.quantity)));
   const productIds = data.map((item) => item.productId).join(', ');
-
   const currentDate = format(new Date(), 'MMMM dd, yyyy');
 
   const handlePrint = useReactToPrint({
@@ -138,9 +138,9 @@ export default function Detail({
               variant="outline"
               className="h-8 gap-1"
               onClick={handleCheckout}
-              disabled={total === 0 || !transactionId || printing}
+              disabled={total === 0 || !transactionId || printing || loading}
             >
-              <Printer />
+              {loading ? <ReloadIcon className="animate-spin" /> : <Printer />}
             </Button>
           </div>
         </CardHeader>

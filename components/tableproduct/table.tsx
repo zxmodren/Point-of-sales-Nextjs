@@ -8,12 +8,12 @@ import {
 } from '@/components/ui/card';
 
 import { Table } from '@/components/ui/table';
-import TableHeadProduct from './component/TableHead';
-import TableBodyProduct from './component/TableBody';
+import TableHeadProduct from './components/TableHead';
+import TableBodyProduct from './components/TableBody';
 import { PaginationDemo } from '@/components/paginations/pagination';
 import { fetchProduct } from '@/data/product';
 import { PageProps } from '@/types/paginations';
-import AddButtonComponent from './component/btn/addProduct';
+import AddButtonComponent from './components/btn/addProduct';
 import { SearchInput } from '@/components/search/search';
 export default async function TableProduct(props: PageProps) {
   const pageNumber = Number(props?.searchParams?.page || 1); // Get the page number. Default to 1 if not provided.

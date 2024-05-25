@@ -1,120 +1,165 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind components;
+@tailwind utilities;
 
-
-  
-
-  @layer base {
-    :root {
-      --background: 0 0% 100%;
-      --foreground: 240 10% 3.9%;
-      --card: 0 0% 100%;
-      --card-foreground: 240 10% 3.9%;
-      --popover: 0 0% 100%;
-      --popover-foreground: 240 10% 3.9%;
-      --primary: 142.1 76.2% 36.3%;
-      --primary-foreground: 355.7 100% 97.3%;
-      --secondary: 240 4.8% 95.9%;
-      --secondary-foreground: 240 5.9% 10%;
-      --muted: 240 4.8% 95.9%;
-      --muted-foreground: 240 3.8% 46.1%;
-      --accent: 240 4.8% 95.9%;
-      --accent-foreground: 240 5.9% 10%;
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 0 0% 98%;
-      --border: 240 5.9% 90%;
-      --input: 240 5.9% 90%;
-      --ring: 142.1 76.2% 36.3%;
-      --radius: 1rem;
-    }
-  
-    .dark {
-      --background: 20 14.3% 4.1%;
-      --foreground: 0 0% 95%;
-      --card: 24 9.8% 10%;
-      --card-foreground: 0 0% 95%;
-      --popover: 0 0% 9%;
-      --popover-foreground: 0 0% 95%;
-      --primary: 142.1 70.6% 45.3%;
-      --primary-foreground: 144.9 80.4% 10%;
-      --secondary: 240 3.7% 15.9%;
-      --secondary-foreground: 0 0% 98%;
-      --muted: 0 0% 15%;
-      --muted-foreground: 240 5% 64.9%;
-      --accent: 12 6.5% 15.1%;
-      --accent-foreground: 0 0% 98%;
-      --destructive: 0 62.8% 30.6%;
-      --destructive-foreground: 0 85.7% 97.3%;
-      --border: 240 3.7% 15.9%;
-      --input: 240 3.7% 15.9%;
-      --ring: 142.4 71.8% 29.2%;
-    }
-  }
-  
-
-  
-
-  @layer base {
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background text-foreground;
-    }
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 142.1 76.2% 36.3%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142.1 76.2% 36.3%;
+    --radius: 1rem;
   }
 
-
-  @media print {
-    .print\:w-full {
-      width: 100%;
-    }
-    .print\:max-w-\[80mm\] {
-      max-width: 80mm;
-    }
-    .print\:p-4 {
-      padding: 1rem;
-    }
-    .print\:border {
-      border: 1px solid #000;
-    }
-    .print\:text-\[12px\] {
-      font-size: 12px;
-    }
-    .print\:font-mono {
-      font-family: 'Courier New', Courier, monospace;
-    }
-    .print\:text-center {
-      text-align: center;
-    }
-    .print\:font-bold {
-      font-weight: bold;
-    }
-    .print\:border-dashed {
-      border-style: dashed;
-    }
-    .print\:py-2 {
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
-    }
-    .print\:mt-2 {
-      margin-top: 0.5rem;
-    }
-    .print\:flex {
-      display: flex;
-    }
-    .print\:justify-between {
-      justify-content: space-between;
-    }
-    .print\:border-t {
-      border-top-width: 1px;
-    }
-    .print\:border-b {
-      border-bottom-width: 1px;
-    }
-    .print\:my-2 {
-      margin-top: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 0 0% 95%;
+    --card: 24 9.8% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 142.1 70.6% 45.3%;
+    --primary-foreground: 144.9 80.4% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 142.4 71.8% 29.2%;
   }
-  
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@media print {
+  .print\:w-full {
+    width: 100%;
+  }
+  .print\:max-w-\[80mm\] {
+    max-width: 80mm;
+  }
+  .print\:p-4 {
+    padding: 1rem;
+  }
+  .print\:border {
+    border: 1px solid #000;
+  }
+  .print\:text-\[12px\] {
+    font-size: 12px;
+  }
+  .print\:font-mono {
+    font-family: 'Courier New', Courier, monospace;
+  }
+  .print\:text-center {
+    text-align: center;
+  }
+  .print\:font-bold {
+    font-weight: bold;
+  }
+  .print\:border-dashed {
+    border-style: dashed;
+  }
+  .print\:py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .print\:mt-2 {
+    margin-top: 0.5rem;
+  }
+  .print\:flex {
+    display: flex;
+  }
+  .print\:justify-between {
+    justify-content: space-between;
+  }
+  .print\:border-t {
+    border-top-width: 1px;
+  }
+  .print\:border-b {
+    border-bottom-width: 1px;
+  }
+  .print\:my-2 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.apexcharts-legend-text {
+  @apply !text-body dark:!text-bodydark;
+}
+
+.apexcharts-text {
+  @apply !fill-body dark:!fill-bodydark;
+}
+
+.apexcharts-xcrosshairs {
+  @apply !fill-stroke dark:!fill-strokedark;
+}
+
+.apexcharts-gridline {
+  @apply !stroke-stroke dark:!stroke-strokedark;
+}
+
+.apexcharts-series.apexcharts-pie-series path {
+  @apply dark:!stroke-transparent;
+}
+
+.apexcharts-legend-series {
+  @apply !inline-flex gap-1.5;
+}
+
+.apexcharts-tooltip.apexcharts-theme-light {
+  @apply dark:!border-strokedark dark:!bg-boxdark;
+}
+
+.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+  @apply dark:!border-strokedark dark:!bg-meta-4;
+}
+
+.apexcharts-xaxistooltip,
+.apexcharts-yaxistooltip {
+  @apply dark:!border-meta-4 dark:!bg-meta-4 dark:!text-bodydark1;
+}
+
+.apexcharts-xaxistooltip-bottom:after {
+  @apply !border-b-gr dark:!border-b-meta-4;
+}
+
+.apexcharts-xaxistooltip-bottom:before {
+  @apply !border-b-gr dark:!border-b-meta-4;
+}
+
+.apexcharts-xaxistooltip-bottom {
+  @apply !rounded !border-none !bg-gr !text-xs !font-medium !text-black dark:!text-white;
+}
+
+.apexcharts-tooltip-series-group {
+  @apply !pl-1.5;
+}

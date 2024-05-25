@@ -25,7 +25,7 @@ export function Orders() {
   const [dialogAddOpen, setDialogAddOpen] = useState(false);
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
-  const [taxRate, setTaxRate] = useState<number>(0.1);
+  const [taxRate, setTaxRate] = useState<number>(10);
   const [transactionData, setTransactionData] = useState<TransactionData[]>([]);
   const [showTable, setShowTable] = useState(true);
   const [loading, setLoading] = useState(false);
