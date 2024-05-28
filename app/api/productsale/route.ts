@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
@@ -20,6 +21,7 @@ export async function GET(req: NextRequest) {
 
     // Return an error response if start or end date is missing
     if (!start || !end) {
+      console.error('Missing start or end date');
       return NextResponse.json(
         { error: 'Missing start or end date' },
         { status: 400 }
@@ -31,33 +33,37 @@ export async function GET(req: NextRequest) {
     const endDate = new Date(end);
     endDate.setUTCHours(23, 59, 59, 999); // Set end date to the end of the day
 
-    // Query the database to get total quantity sold for each day in the range
-    const result = await prisma.onSaleProduct.groupBy({
-      by: ['saledate'],
-      _sum: {
-        quantity: true,
-      },
+    // Query the database to get total quantity sold within the date range
+    const result = await prisma.onSaleProduct.findMany({
       where: {
         saledate: {
           gte: startDate,
           lte: endDate,
         },
       },
-      orderBy: {
-        saledate: 'asc',
+      select: {
+        saledate: true,
+        quantity: true,
       },
     });
 
     // Create an array of all dates in the range with totalQuantity initialized to 0
     const dateArray: QuantityByDay[] = [];
-    for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+    for (
+      let d = new Date(startDate);
+      d <= endDate;
+      d.setDate(d.getDate() + 1)
+    ) {
       dateArray.push({ day: d.toISOString().split('T')[0], totalQuantity: 0 });
     }
 
     // Map the database results to the date array
     const resultMap = result.reduce<Record<string, number>>((acc, entry) => {
       const day = entry.saledate.toISOString().split('T')[0];
-      acc[day] = entry._sum.quantity || 0;
+      if (!acc[day]) {
+        acc[day] = 0;
+      }
+      acc[day] += entry.quantity;
       return acc;
     }, {});
 

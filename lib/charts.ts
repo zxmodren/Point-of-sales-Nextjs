@@ -255,7 +255,7 @@ export const initialChartfourOptions: ApexOptions = {
     position: 'top',
     horizontalAlign: 'left',
   },
-  colors: ['#3f4', '#3C50E0', '#80CAEE'],
+  colors: ['#3f4', '#DC143C', '#80CAEE'],
   chart: {
     fontFamily: 'Satoshi, sans-serif',
     height: 335,
@@ -312,7 +312,7 @@ export const initialChartfourOptions: ApexOptions = {
   markers: {
     size: 4,
     colors: '#fff',
-    strokeColors: ['#3f4', '#3C50E0', '#80CAEE'],
+    strokeColors: ['#3f4', '#DC143C', '#80CAEE'],
     strokeWidth: 3,
     strokeOpacity: 0.9,
     strokeDashArray: 0,

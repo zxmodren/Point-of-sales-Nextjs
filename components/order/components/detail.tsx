@@ -115,7 +115,7 @@ export default function Detail({
       localStorage.removeItem('transactionId');
       setTransactionId(null);
 
-      eventBus.emit('fetchTransactionData');
+      eventBus.emit('clearTransactionData');
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};

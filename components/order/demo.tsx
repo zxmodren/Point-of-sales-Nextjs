@@ -86,8 +86,15 @@ export function Orders() {
       fetchTransactionData();
     };
 
+    const handleEventBusEventClear = () => {
+      setTransactionData([]);
+    };
+
     // Subscribe to eventBus event to fetch transaction data
     eventBus.on('fetchTransactionData', handleEventBusEvent);
+
+    // Subscribe to eventBus event to fetch transaction data
+    eventBus.on('clearTransactionData', handleEventBusEventClear);
 
     // Clean up event listener
     return () => {
