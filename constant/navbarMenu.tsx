@@ -1,4 +1,4 @@
-import { Home, LineChart, Package, ShoppingCart, Archive } from 'lucide-react';
+import { Home, Package, ShoppingCart, Archive, Settings } from 'lucide-react';
 import { NavItem } from '@/types/Navbar';
 
 export const NAVBAR_ITEMS: NavItem[] = [
@@ -23,8 +23,8 @@ export const NAVBAR_ITEMS: NavItem[] = [
     icon: <Archive className="h-4 w-4" />,
   },
   {
-    title: 'Analytics',
-    path: '/analytics',
-    icon: <LineChart className="h-4 w-4" />,
+    title: 'Settings',
+    path: '/settings',
+    icon: <Settings className="h-4 w-4" />,
   },
 ];

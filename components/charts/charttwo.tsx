@@ -1,126 +1,36 @@
 'use client';
 import { ApexOptions } from 'apexcharts';
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { Input } from '@/components/ui/input';
-import dynamic from 'next/dynamic';
+import { initialChartoneOptions } from '@/lib/charts';
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
 });
 
-interface ChartOneState {
+interface ChartTwoState {
   series: {
     name: string;
     data: number[];
   }[];
+  options: ApexOptions;
 }
 
-const ChartOne: React.FC = () => {
+const ChartTwo: React.FC = () => {
   const [dataChart, setDataChart] = useState<number[]>([]);
+  const [dataChartWithoutTax, setDataChartWithoutTax] = useState<number[]>([]);
   const [startDate, setStartDate] = useState<string>('2024-05-01');
   const [endDate, setEndDate] = useState<string>('2024-05-15');
-  const [categories, setCategories] = useState<string[]>([]);
-  const [options, setOptions] = useState<ApexOptions>({
-    legend: {
-      show: false,
-      position: 'top',
-      horizontalAlign: 'left',
-    },
-    colors: ['#80CAEE'],
-    chart: {
-      fontFamily: 'Satoshi, sans-serif',
-      height: 335,
-      type: 'area',
-      dropShadow: {
-        enabled: true,
-        color: '#623CEA14',
-        top: 10,
-        blur: 4,
-        left: 0,
-        opacity: 0.1,
-      },
-      toolbar: {
-        show: false,
-      },
-    },
-    responsive: [
-      {
-        breakpoint: 1024,
-        options: {
-          chart: {
-            height: 300,
-          },
-        },
-      },
-      {
-        breakpoint: 1366,
-        options: {
-          chart: {
-            height: 420,
-          },
-        },
-      },
-    ],
-    stroke: {
-      width: [2, 2],
-      curve: 'straight',
-    },
-    grid: {
-      xaxis: {
-        lines: {
-          show: true,
-        },
-      },
-      yaxis: {
-        lines: {
-          show: true,
-        },
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    markers: {
-      size: 4,
-      colors: '#fff',
-      strokeColors: ['#80CAEE'],
-      strokeWidth: 3,
-      strokeOpacity: 0.9,
-      strokeDashArray: 0,
-      fillOpacity: 1,
-      discrete: [],
-      hover: {
-        size: undefined,
-        sizeOffset: 5,
-      },
-    },
-    xaxis: {
-      type: 'category',
-      categories,
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-    },
-    yaxis: {
-      title: {
-        style: {
-          fontSize: '0px',
-        },
-      },
-      min: 0,
-      max: 10,
-    },
-  });
-  const [state, setState] = useState<ChartOneState>({
+
+  const [state, setState] = useState<ChartTwoState>({
     series: [
       {
-        name: 'Products Sales',
+        name: 'Gross Income',
         data: [],
       },
     ],
+    options: initialChartoneOptions,
   });
 
   const generateDateRange = (start: string, end: string) => {
@@ -129,27 +39,36 @@ const ChartOne: React.FC = () => {
     const dateArray: string[] = [];
     let currentDate = startDate;
 
+    const isSameMonth =
+      startDate.getFullYear() === endDate.getFullYear() &&
+      startDate.getMonth() === endDate.getMonth();
+    const isSameYear = startDate.getFullYear() === endDate.getFullYear();
+
     while (currentDate <= endDate) {
       let formattedDate: string;
 
-      if (startDate.getFullYear() !== endDate.getFullYear()) {
+      if (!isSameYear) {
         formattedDate = currentDate.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'short',
           day: 'numeric',
         });
-      } else if (startDate.getMonth() === endDate.getMonth()) {
+      } else if (!isSameMonth) {
         formattedDate = currentDate.toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
         });
       } else {
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const date = String(currentDate.getDate()).padStart(2, '0');
-        formattedDate = `${month}-${date}`;
+        formattedDate = currentDate.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+        });
       }
 
-      dateArray.push(formattedDate);
+      if (!dateArray.includes(formattedDate)) {
+        dateArray.push(formattedDate);
+      }
+
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
@@ -157,19 +76,30 @@ const ChartOne: React.FC = () => {
   };
 
   useEffect(() => {
-    setCategories(generateDateRange(startDate, endDate));
+    const newCategories = generateDateRange(startDate, endDate);
+
+    setState((prevState) => ({
+      ...prevState,
+      options: {
+        ...prevState.options,
+        xaxis: {
+          ...prevState.options.xaxis,
+          categories: newCategories,
+        },
+      },
+    }));
   }, [startDate, endDate]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `/api/chart?start=${startDate}&end=${endDate}`
+        `/api/chart/income?start=${startDate}&end=${endDate}`
       );
       const { combinedResult } = response.data;
 
       // Assuming combinedResult is an array of objects with totalQuantity field
       const chartData = combinedResult.map(
-        (item: { totalQuantity: number }) => item.totalQuantity
+        (item: { totalIncome: number }) => item.totalIncome
       );
 
       // Update dataChart with the processed data
@@ -186,31 +116,26 @@ const ChartOne: React.FC = () => {
 
   // Update state when dataChart changes
   useEffect(() => {
-    // Calculate the maximum value in dataChart
-    const maxChartData = Math.max(...dataChart);
+    if (dataChart.length > 0) {
+      const maxChartData = Math.max(...dataChart) + 1;
 
-    // Update y-axis max value in options
-    const updatedOptions = {
-      ...options,
-      yaxis: {
-        ...options.yaxis,
-        max: maxChartData > 10 ? maxChartData : 10, // Set max to maxChartData if greater than 20, otherwise keep it at 20
-      },
-    };
-
-    // Update the options
-    setOptions(updatedOptions);
-
-    // Update state with the new options
-    setState((prevState) => ({
-      ...prevState,
-      series: [
-        {
-          ...prevState.series[0],
-          data: dataChart,
+      setState((prevState) => ({
+        ...prevState,
+        series: [
+          {
+            ...prevState.series[0],
+            data: dataChart,
+          },
+        ],
+        options: {
+          ...prevState.options,
+          yaxis: {
+            ...prevState.options.yaxis,
+            max: maxChartData,
+          },
         },
-      ],
-    }));
+      }));
+    }
   }, [dataChart]);
 
   return (
@@ -222,9 +147,7 @@ const ChartOne: React.FC = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondarychart"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-secondarychart">
-                Total Products Sales
-              </p>
+              <p className="font-semibold text-secondarychart">Total Income</p>
               <div className="flex gap-4">
                 <div className="flex gap-4 items-center">
                   <label className="mr-2 text-sm">Start</label>
@@ -255,7 +178,7 @@ const ChartOne: React.FC = () => {
       <div>
         <div id="chartOne" className="-ml-5">
           <ReactApexChart
-            options={options}
+            options={state.options}
             series={state.series}
             type="area"
             height={420}
@@ -267,4 +190,4 @@ const ChartOne: React.FC = () => {
   );
 };
 
-export default ChartOne;
+export default ChartTwo;

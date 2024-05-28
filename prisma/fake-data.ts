@@ -2,6 +2,8 @@ import { UserRole, CatProduct } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import Decimal from 'decimal.js';
 
+
+
 export function fakeUser() {
   return {
     name: faker.person.fullName(),
@@ -26,31 +28,21 @@ export function fakeUserComplete() {
 }
 export function fakeProductStock() {
   return {
-    name: faker.commerce.productName(),
+    name: faker.person.fullName(),
     imageProduct: undefined,
     price: faker.number.float(),
     stock: faker.number.float(),
-    cat: faker.helpers.arrayElement([
-      CatProduct.ELECTRO,
-      CatProduct.DRINK,
-      CatProduct.FOOD,
-      CatProduct.FASHION,
-    ] as const),
+    cat: faker.helpers.arrayElement([CatProduct.ELECTRO, CatProduct.DRINK, CatProduct.FOOD, CatProduct.FASHION] as const),
   };
 }
 export function fakeProductStockComplete() {
   return {
     id: faker.string.uuid(),
-    name: faker.commerce.productName(),
+    name: faker.person.fullName(),
     imageProduct: undefined,
-    price: Number(faker.commerce.price({ min: 100, max: 1000 })),
-    stock: faker.number.float({ min: 50, max: 100, fractionDigits: 0 }),
-    cat: faker.helpers.arrayElement([
-      CatProduct.ELECTRO,
-      CatProduct.DRINK,
-      CatProduct.FOOD,
-      CatProduct.FASHION,
-    ] as const),
+    price: faker.number.float(),
+    stock: faker.number.float(),
+    cat: faker.helpers.arrayElement([CatProduct.ELECTRO, CatProduct.DRINK, CatProduct.FOOD, CatProduct.FASHION] as const),
   };
 }
 export function fakeProduct() {
@@ -89,6 +81,19 @@ export function fakeTransactionComplete() {
     id: faker.string.uuid(),
     totalAmount: undefined,
     createdAt: new Date(),
-    isComplete: true,
+    isComplete: false,
+  };
+}
+export function fakeShopData() {
+  return {
+    tax: undefined,
+    name: undefined,
+  };
+}
+export function fakeShopDataComplete() {
+  return {
+    id: faker.string.uuid(),
+    tax: undefined,
+    name: undefined,
   };
 }

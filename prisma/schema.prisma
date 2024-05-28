@@ -80,3 +80,10 @@ model Transaction {
   isComplete  Boolean         @default(false)
   products    OnSaleProduct[]
 }
+
+model ShopData {
+  id          String          @id @default(cuid())
+  tax Int?
+  name String?
+}
+

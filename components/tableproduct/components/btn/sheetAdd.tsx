@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Sheet,
   SheetClose,
@@ -10,22 +10,22 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
+} from '@/components/ui/sheet';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Cross2Icon, ReloadIcon } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
-import { CatProduct } from "@prisma/client";
-import { productSchema } from "@/schema";
-import { z } from "zod";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-
+} from '@/components/ui/select';
+import { Cross2Icon, ReloadIcon } from '@radix-ui/react-icons';
+import { useEffect, useState } from 'react';
+import { CatProduct } from '@prisma/client';
+import { productSchema } from '@/schema';
+import { z } from 'zod';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 export function SheetAdd({
   open,
   onClose,
@@ -33,12 +33,12 @@ export function SheetAdd({
   open: boolean;
   onClose: () => void;
 }) {
-  const [productName, setProductName] = useState("");
-  const [sellPrice, setSellPrice] = useState("");
-  const [buyPrice, setBuyPrice] = useState("");
-  const [stockProduct, setStockProduct] = useState("");
-  const [categoryProduct, setCategories] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [productName, setProductName] = useState('');
+  const [sellPrice, setSellPrice] = useState('');
+  const [buyPrice, setBuyPrice] = useState('');
+  const [stockProduct, setStockProduct] = useState('');
+  const [categoryProduct, setCategories] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [error, setError] = useState<{ [key: string]: string }>({});
   const buyPriceNumber = parseFloat(buyPrice) || 0;
   const stockProductNumber = parseFloat(stockProduct) || 0;
@@ -52,12 +52,12 @@ export function SheetAdd({
   useEffect(() => {
     if (!open) {
       // Reset input value when sheet is closed
-      setSearchTerm("");
-      setProductName("");
-      setSellPrice("");
-      setStockProduct("");
-      setBuyPrice("");
-      setCategories("");
+      setSearchTerm('');
+      setProductName('');
+      setSellPrice('');
+      setStockProduct('');
+      setBuyPrice('');
+      setCategories('');
     }
   }, [open]);
   const handleCancel = () => {
@@ -67,6 +67,15 @@ export function SheetAdd({
 
   const handleAdd = async () => {
     setLoading(true);
+    // Check if the user is online
+    const isOnline = navigator.onLine;
+
+    if (!isOnline) {
+      toast.error('You are offline. Please check your internet connection.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const validatedData = productSchema.parse({
         productName: productName,
@@ -77,7 +86,7 @@ export function SheetAdd({
       });
 
       // Send validated data using axios
-      const response = await axios.post("/api/product", validatedData);
+      const response = await axios.post('/api/product', validatedData);
 
       // If no errors, close the dialog and refresh the page
       onClose();
@@ -86,7 +95,7 @@ export function SheetAdd({
       if (error instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
         error.errors.forEach((err) => {
-          const path = err.path.join(".");
+          const path = err.path.join('.');
           fieldErrors[path] = err.message;
         });
         setError((prevError) => ({
@@ -96,6 +105,7 @@ export function SheetAdd({
       } else {
         console.error(error);
         // Handle other types of errors here
+        toast.error('An error occurred. Please try again later.');
       }
     } finally {
       setLoading(false);
@@ -110,7 +120,8 @@ export function SheetAdd({
           <SheetDescription>Add product your product here.</SheetDescription>
           <div
             onClick={handleCancel}
-            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
+          >
             <Cross2Icon className="h-4 w-4" />
             <span className="sr-only">Close</span>
           </div>
@@ -125,7 +136,7 @@ export function SheetAdd({
               value={productName}
               onChange={(e) => {
                 setProductName(e.target.value);
-                setError((prevError) => ({ ...prevError, productName: "" }));
+                setError((prevError) => ({ ...prevError, productName: '' }));
               }}
               className="col-span-3"
             />
@@ -142,7 +153,7 @@ export function SheetAdd({
               value={buyPrice}
               onChange={(e) => {
                 setBuyPrice(e.target.value);
-                setError((prevError) => ({ ...prevError, buyPrice: "" }));
+                setError((prevError) => ({ ...prevError, buyPrice: '' }));
               }}
               className="col-span-3"
               type="number"
@@ -160,7 +171,7 @@ export function SheetAdd({
               value={sellPrice}
               onChange={(e) => {
                 setSellPrice(e.target.value);
-                setError((prevError) => ({ ...prevError, sellPrice: "" }));
+                setError((prevError) => ({ ...prevError, sellPrice: '' }));
               }}
               className="col-span-3"
               type="number"
@@ -178,7 +189,7 @@ export function SheetAdd({
               value={stockProduct}
               onChange={(e) => {
                 setStockProduct(e.target.value);
-                setError((prevError) => ({ ...prevError, stockProduct: "" }));
+                setError((prevError) => ({ ...prevError, stockProduct: '' }));
               }}
               className="col-span-3"
               type="number"
@@ -197,9 +208,10 @@ export function SheetAdd({
                 setCategories(newValue as CatProduct);
                 setError((prevError) => ({
                   ...prevError,
-                  category: "",
+                  category: '',
                 }));
-              }}>
+              }}
+            >
               <SelectTrigger id="categoryProduct" className="min-w-max">
                 <SelectValue
                   className="pr-20"
@@ -207,9 +219,9 @@ export function SheetAdd({
                     searchTerm
                       ? searchTerm.charAt(0).toUpperCase() +
                         searchTerm.slice(1).toLowerCase()
-                      : "Select Category"
+                      : 'Select Category'
                   }
-                  onClick={() => setSearchTerm("")}
+                  onClick={() => setSearchTerm('')}
                 />
               </SelectTrigger>
               {error?.category && (
@@ -226,7 +238,7 @@ export function SheetAdd({
                   }
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search Category"
-                  style={{ padding: "5px", margin: "5px 0", width: "100%" }}
+                  style={{ padding: '5px', margin: '5px 0', width: '100%' }}
                 />
                 {filteredCatProducts.map((product) => (
                   <SelectItem key={product} value={product}>
@@ -244,14 +256,15 @@ export function SheetAdd({
               onClick={handleAdd}
               type="submit"
               disabled={loading}
-              className="text-gray-100">
+              className="text-gray-100"
+            >
               {loading ? (
                 <>
                   <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
                 </>
               ) : (
-                "Add Product"
+                'Add Product'
               )}
             </Button>
           </SheetClose>

@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogDescription,
@@ -8,39 +8,51 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import * as DialogR from "@radix-ui/react-dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Pencil } from "lucide-react";
-import { TransactionData } from "@/types/transaction";
-import { useState } from "react";
-import { orderSchema } from "@/schema";
-import axios from "axios";
-import { z } from "zod";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import eventBus from "@/lib/even";
-
+} from '@/components/ui/dialog';
+import * as DialogR from '@radix-ui/react-dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Pencil } from 'lucide-react';
+import { TransactionData } from '@/types/transaction';
+import { useState } from 'react';
+import { orderSchema } from '@/schema';
+import axios from 'axios';
+import { z } from 'zod';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import eventBus from '@/lib/even';
+import { toast } from 'react-toastify';
+// Interface for the DialogEdit component
 interface DialogEditProps {
   data: TransactionData;
 }
 
+// DialogEdit component
 export function DialogEdit({ data }: DialogEditProps) {
+  // State hooks
   const [productName, setProductName] = useState(
-    data.product.productstock.name || ""
+    data.product.productstock.name || ''
   );
-  const [productId, setProducId] = useState(data.productId || "");
-  const [dataId, setDataId] = useState(data.id || "");
-  const [qTy, setqTy] = useState(data.quantity || "");
+  const [productId, setProducId] = useState(data.productId || '');
+  const [dataId, setDataId] = useState(data.id || '');
+  const [qTy, setqTy] = useState(data.quantity || '');
   const [error, setError] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  // Convert quantity to number
   const qTyNumber = parseFloat(String(qTy)) || 0;
 
+  // Handle edit function
   const handleEdit = async () => {
     setLoading(true);
     try {
+      // Check if the user is online
+      const isOnline = navigator.onLine;
+
+      if (!isOnline) {
+        toast.error('You are offline. Please check your internet connection.');
+        return;
+      }
       const validatedData = orderSchema.parse({
         qTy: qTyNumber,
       });
@@ -51,12 +63,13 @@ export function DialogEdit({ data }: DialogEditProps) {
         validatedData
       );
       setDialogOpen(false);
-      eventBus.emit("fetchTransactionData");
-    } catch (error) {
+      eventBus.emit('fetchTransactionData');
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
+        // Handle validation errors
         const fieldErrors: { [key: string]: string } = {};
         error.errors.forEach((err) => {
-          const path = err.path.join(".");
+          const path = err.path.join('.');
           fieldErrors[path] = err.message;
         });
         setError((prevError) => ({
@@ -64,15 +77,22 @@ export function DialogEdit({ data }: DialogEditProps) {
           ...fieldErrors,
         }));
       } else {
-        console.error(error);
+        // Handle other types of errors
+        toast.error(
+          'An unexpected error occurred: ' + (error as Error).message
+        );
       }
     } finally {
       setLoading(false);
     }
   };
+
+  // Handle cancel function
   const handleCancel = () => {
     setDialogOpen(false);
   };
+
+  // Return JSX for the component
   return (
     <Dialog open={dialogOpen}>
       <DialogTrigger asChild>
@@ -80,7 +100,8 @@ export function DialogEdit({ data }: DialogEditProps) {
           variant="outline"
           size="icon"
           className="mr-4"
-          onClick={() => setDialogOpen(true)}>
+          onClick={() => setDialogOpen(true)}
+        >
           <Pencil />
         </Button>
       </DialogTrigger>
@@ -121,7 +142,7 @@ export function DialogEdit({ data }: DialogEditProps) {
               className="col-span-3"
               onChange={(e) => {
                 setqTy(e.target.value);
-                setError((prevError) => ({ ...prevError, qTy: "" }));
+                setError((prevError) => ({ ...prevError, qTy: '' }));
               }}
             />
             {error?.qTy && (
@@ -139,14 +160,15 @@ export function DialogEdit({ data }: DialogEditProps) {
             onClick={handleEdit}
             type="submit"
             disabled={loading}
-            className="text-gray-100">
+            className="text-gray-100"
+          >
             {loading ? (
               <>
                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 Please wait
               </>
             ) : (
-              "Save change"
+              'Save change'
             )}
           </Button>
         </DialogFooter>

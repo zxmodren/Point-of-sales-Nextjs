@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   AlertDialog,
@@ -9,11 +9,12 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import axios from "axios";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ReloadIcon } from "@radix-ui/react-icons";
+} from '@/components/ui/alert-dialog';
+import axios from 'axios';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { toast } from 'react-toastify';
 type Data = {
   id: string;
   productstock: {
@@ -38,6 +39,15 @@ export function DeleteAlertDialog({
 
   const handleDelete = async () => {
     setLoading(true);
+    // Check if the user is online
+    const isOnline = navigator.onLine;
+
+    if (!isOnline) {
+      toast.error('You are offline. Please check your internet connection.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.delete(
         `/api/product/${data.productstock.id}`
@@ -46,11 +56,11 @@ export function DeleteAlertDialog({
       router.refresh();
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.error("Server Error:", error.response?.data);
+        console.error('Server Error:', error.response?.data);
       } else if (error instanceof Error) {
-        console.error("Error:", error.message);
+        console.error('Error:', error.message);
       } else {
-        console.error("Unknown error:", error);
+        console.error('Unknown error:', error);
       }
     } finally {
       setLoading(false);
@@ -74,14 +84,15 @@ export function DeleteAlertDialog({
           <AlertDialogAction
             onClick={handleDelete}
             disabled={loading}
-            className="text-gray-100">
+            className="text-gray-100"
+          >
             {loading ? (
               <>
                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 Please wait
               </>
             ) : (
-              "Delete"
+              'Delete'
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

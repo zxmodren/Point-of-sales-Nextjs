@@ -20,57 +20,62 @@ import { TransactionData } from '@/types/transaction';
 import eventBus from '@/lib/even';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { AlertDialogDeletetransaction } from './components/dialogDelete';
-
+import { toast } from 'react-toastify';
 export function Orders() {
   const [dialogAddOpen, setDialogAddOpen] = useState(false);
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
-  const [taxRate, setTaxRate] = useState<number>(10);
   const [transactionData, setTransactionData] = useState<TransactionData[]>([]);
   const [showTable, setShowTable] = useState(true);
   const [loading, setLoading] = useState(false);
   const tableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const savedTransactionId = localStorage.getItem('transactionId');
-    if (savedTransactionId) {
-      setTransactionId(savedTransactionId);
+    const storedTransactionId = localStorage.getItem('transactionId');
+    if (typeof window !== 'undefined' && storedTransactionId) {
+      setTransactionId(storedTransactionId);
     }
+  }, []);
 
-    let isMounted = true;
-
+  useEffect(() => {
+    // Fetch transaction data when component mounts or transactionId changes
     const fetchTransactionData = async () => {
-      if (isMounted) {
-        try {
-          if (!transactionId) {
-            setTransactionData([]);
-            return;
-          }
+      try {
+        if (!transactionId) {
+          setTransactionData([]);
+          return;
+        }
 
-          const response = await axios.get(
-            `/api/transactions/${transactionId}`
+        // Check if the user is online
+        const isOnline = navigator.onLine;
+
+        if (!isOnline) {
+          toast.error(
+            'You are offline. Please check your internet connection.'
           );
-          if (response.status === 200 && isMounted) {
-            const data = response.data;
-            setTransactionData(Array.isArray(data) ? data : [data]);
-          } else if (response.status === 404 && isMounted) {
-            setTransactionData([]);
-          } else {
-            console.error('Failed to fetch transaction data');
-          }
-        } catch (error) {
-          if (axios.isAxiosError(error)) {
-            if (error.response && error.response.status === 404 && isMounted) {
-              setTransactionData([]);
-            } else {
-              console.error(
-                'An error occurred while fetching transaction data:',
-                error
-              );
-            }
-          } else {
-            console.error('An unexpected error occurred:', error);
-          }
+          return;
+        }
+
+        const response = await axios.get(`/api/transactions/${transactionId}`);
+        if (response.status === 200) {
+          const data = response.data;
+          setTransactionData(Array.isArray(data) ? data : [data]);
+        } else {
+          console.error('Failed to fetch transaction data');
+        }
+      } catch (error: any) {
+        if (error.response && error.response.status === 405) {
+          // Data not found, remove transactionId from localStorage
+          localStorage.removeItem('transactionId');
+          setTransactionId(null);
+          toast.warn('Transaction not found in the database.');
+        } else if (error.response && error.response.status === 404) {
+          // Data not found, no need to show error
+          setTransactionData([]);
+        } else {
+          toast.error(
+            'An error occurred while fetching transaction data:' + error
+          );
         }
       }
     };
@@ -81,31 +86,48 @@ export function Orders() {
       fetchTransactionData();
     };
 
+    // Subscribe to eventBus event to fetch transaction data
     eventBus.on('fetchTransactionData', handleEventBusEvent);
+
+    // Clean up event listener
     return () => {
-      isMounted = false;
       eventBus.removeListener('fetchTransactionData', handleEventBusEvent);
     };
   }, [transactionId]);
 
   const createTransaction = async () => {
+    // Create new transaction if transactionId is not set
     if (!transactionId) {
       setLoading(true);
       try {
+        // Check if the user is online
+        const isOnline = navigator.onLine;
+
+        if (!isOnline) {
+          toast.error(
+            'You are offline. Please check your internet connection.'
+          );
+          return;
+        }
+
         const response = await axios.post('/api/transactions');
         if (response.status === 201) {
           const { id } = response.data;
           localStorage.setItem('transactionId', id);
           setTransactionId(id);
           setLoading(false);
-          setDialogAddOpen(true);
         } else {
-          console.error('Failed to create transaction');
+          toast.error('Failed to create transaction');
+          setLoading(false);
+          return;
         }
       } catch (error) {
-        console.error('An error occurred:', error);
+        toast.error('An error occurred:' + error);
+        setLoading(false);
+        return;
       }
     }
+
     setDialogAddOpen(true);
   };
 
@@ -176,7 +198,6 @@ export function Orders() {
             <Detail
               data={transactionData}
               transactionId={transactionId}
-              taxRate={taxRate}
               setTransactionId={setTransactionId}
             />
           )}

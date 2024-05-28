@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,22 +8,24 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import * as AlertDialogR from "@radix-ui/react-alert-dialog";
-import { TransactionData } from "@/types/transaction";
-import { Trash2 } from "lucide-react";
-import { useState } from "react";
-import axios from "axios";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import eventBus from "@/lib/even";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import * as AlertDialogR from '@radix-ui/react-alert-dialog';
+import { TransactionData } from '@/types/transaction';
+import { Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import axios from 'axios';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import eventBus from '@/lib/even';
+import { toast } from 'react-toastify';
 interface DialogDeleteProps {
   data: TransactionData;
 }
+
 export function AlertDialogDelete({ data }: DialogDeleteProps) {
-  const [dataId, setDataId] = useState(data.id || "");
+  const [dataId, setDataId] = useState(data.id || '');
   const [productName, setProductName] = useState(
-    data.product.productstock.name || ""
+    data.product.productstock.name || ''
   );
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -35,28 +37,41 @@ export function AlertDialogDelete({ data }: DialogDeleteProps) {
   const handleDelete = async () => {
     setLoading(true);
     try {
+      // Check if the user is online
+      const isOnline = navigator.onLine;
+
+      if (!isOnline) {
+        toast.error('You are offline. Please check your internet connection.');
+        return;
+      }
+
+      // Perform the delete request
       const response = await axios.delete(`/api/onsale/${dataId}`);
+      // Close the dialog and refresh data
       setDialogOpen(false);
-      eventBus.emit("fetchTransactionData");
+      eventBus.emit('fetchTransactionData');
     } catch (error: unknown) {
+      // Handle errors
       if (axios.isAxiosError(error)) {
-        console.error("Server Error:", error.response?.data);
+        toast.error('Server Error:' + error.response?.data);
       } else if (error instanceof Error) {
-        console.error("Error:", error.message);
+        toast.error('Error:' + error.message);
       } else {
-        console.error("Unknown error:", error);
+        toast.error('Unknown error:' + error);
       }
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <AlertDialog open={dialogOpen}>
       <AlertDialogTrigger asChild>
         <Button
           variant="destructive"
           size="icon"
-          onClick={() => setDialogOpen(true)}>
+          onClick={() => setDialogOpen(true)}
+        >
           <Trash2 />
         </Button>
       </AlertDialogTrigger>
@@ -64,8 +79,8 @@ export function AlertDialogDelete({ data }: DialogDeleteProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete{" "}
-            {productName} from order.
+            This action cannot be undone. This will permanently delete{' '}
+            {productName} from the order.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -73,14 +88,15 @@ export function AlertDialogDelete({ data }: DialogDeleteProps) {
           <AlertDialogAction
             onClick={handleDelete}
             disabled={loading}
-            className="text-gray-100">
+            className="text-gray-100"
+          >
             {loading ? (
               <>
                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 Please wait
               </>
             ) : (
-              "Delete"
+              'Delete'
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

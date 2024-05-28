@@ -1,9 +1,9 @@
 import React from 'react';
-import ChartOne from '@/components/charts/chart1';
+import { CardHoverEffectDemo } from '@/components/cardHover/hover';
 const page = () => {
   return (
     <div className="w-full h-full">
-      <ChartOne />
+      <CardHoverEffectDemo />
     </div>
   );
 };

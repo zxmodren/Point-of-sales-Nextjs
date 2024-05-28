@@ -4,21 +4,27 @@ import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { getTotal } from '@/data/stock';
+import { toast } from 'react-toastify';
+
 function DashboardCard(): React.ReactNode {
+  // State variables to store total stock, total amount, and total quantity
   const [totalStock, setTotalStock] = useState<number | null>(null);
   const [totalAmount, setTotalAmount] = useState<number | null>(null);
   const [totalQuantity, setTotalPrdSale] = useState<number | null>(null);
 
+  // Fetch total values on component mount
   useEffect(() => {
     getTotal()
       .then(({ totalStock, totalAmount, totalQuantity }) => {
+        // Set state with fetched data
         setTotalStock(totalStock?._sum?.stock);
         setTotalAmount(totalAmount?._sum?.totalAmount);
         setTotalPrdSale(totalQuantity?._sum?.quantity);
       })
-      .catch((error) => console.error('Error:', error));
+      .catch((error) => toast.error('Error:', error));
   }, []);
 
+  // Animation variants for the first and second cards
   const first = {
     initial: {
       x: 20,
@@ -47,9 +53,10 @@ function DashboardCard(): React.ReactNode {
       whileHover="hover"
       className="flex flex-1 w-full h-full min-h-[6rem] dark:bg-dot-white/[0.2] bg-dot-black/[0.2] flex-row space-x-2"
     >
+      {/* First card displaying total stock */}
       <motion.div
         variants={first}
-        className="h-full w-1/3 rounded-2xl bg-gray-100 p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
+        className="h-full w-1/3 rounded-2xl bg-gray-100/[0.8] p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
       >
         <Boxes size={40} />
         <p className="sm:text-sm text-xs text-center font-semibold text-neutral-500 mt-4">
@@ -59,7 +66,9 @@ function DashboardCard(): React.ReactNode {
           {totalStock ?? 'Loading...'}
         </p>
       </motion.div>
-      <motion.div className="h-full relative z-20 w-1/3 rounded-2xl bg-gray-100 p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center">
+
+      {/* Second card displaying total amount */}
+      <motion.div className="h-full relative z-20 w-1/3 rounded-2xl bg-gray-100/[0.8] p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center">
         <CircleDollarSign size={40} />
         <p className="sm:text-sm text-xs text-center font-semibold text-neutral-500 mt-4">
           Income
@@ -74,9 +83,11 @@ function DashboardCard(): React.ReactNode {
           </p>
         </Badge>
       </motion.div>
+
+      {/* Third card displaying total quantity */}
       <motion.div
         variants={second}
-        className="h-full w-1/3 rounded-2xl bg-gray-100 p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
+        className="h-full w-1/3 rounded-2xl bg-gray-100/[0.8] p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
       >
         <Handshake size={40} />
         <p className="sm:text-sm text-xs text-center font-semibold text-neutral-500 mt-4">

@@ -6,25 +6,37 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
-  if (totalPages <= 7) {
+  const pagination: (number | string)[] = [];
+  const pageRange = 2; // range of pages to show around the current page
+
+  if (totalPages <= 3) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
 
-  if (currentPage <= 3) {
-    return [1, 2, 3, '...', totalPages - 1, totalPages];
+  // Always show the first page
+  pagination.push(1);
+
+  // Add the previous ellipsis if currentPage is greater than pageRange + 2
+  if (currentPage > pageRange + 2) {
+    pagination.push('...');
   }
 
-  if (currentPage >= totalPages - 2) {
-    return [1, 2, 3, '...', totalPages - 2, totalPages - 1, totalPages];
+  // Add pages around the currentPage
+  for (
+    let i = Math.max(2, currentPage - pageRange);
+    i <= Math.min(totalPages - 1, currentPage + pageRange);
+    i++
+  ) {
+    pagination.push(i);
   }
 
-  return [
-    1,
-    '...',
-    currentPage - 1,
-    currentPage,
-    currentPage + 1,
-    '...',
-    totalPages,
-  ];
+  // Add the next ellipsis if currentPage is less than totalPages - pageRange - 1
+  if (currentPage < totalPages - pageRange - 1) {
+    pagination.push('...');
+  }
+
+  // Always show the last page
+  pagination.push(totalPages);
+
+  return pagination;
 };

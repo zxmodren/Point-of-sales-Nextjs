@@ -18,12 +18,16 @@ import { useReactToPrint } from 'react-to-print';
 import { useRouter } from 'next/navigation';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+  // State variables
+  const [taxRate, setTaxRate] = useState<number>(0);
   const [transactionData, setTransactionData] = useState<TransactionData[]>([]);
   const [printing, setPrinting] = useState(false);
+
+  // Reference for printing
   const route = useRouter();
   const componentRef = useRef<HTMLDivElement>(null);
-  let taxRate = 10;
+
+  // Calculate subtotal, tax, and total
   let subtotal = 0;
   transactionData.forEach((item) => {
     subtotal += item.product.sellprice * item.quantity;
@@ -31,10 +35,12 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   const tax = subtotal * (taxRate / 100);
   const total = subtotal + tax;
 
+  // Redirect to error page
   const handleRedirect = () => {
     route.push(`/_error`);
   };
 
+  // Handle printing
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: 'Receipt',
@@ -46,6 +52,27 @@ export default function DetailPage({ params }: { params: { id: string } }) {
     },
   });
 
+  // Fetch shop data on component mount
+  useEffect(() => {
+    const fetchShopData = async () => {
+      try {
+        const response = await axios.get('/api/shopdata');
+        const shopdata = response.data.data;
+
+        if (response.status === 200) {
+          setTaxRate(shopdata.tax);
+        } else {
+          console.log('Failed to fetch data:', shopdata.error);
+        }
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+
+    fetchShopData();
+  }, []);
+
+  // Fetch transaction data for the given ID on component mount
   useEffect(() => {
     let isMounted = true;
 
@@ -89,14 +116,15 @@ export default function DetailPage({ params }: { params: { id: string } }) {
     };
   }, [params.id]);
 
+  // Render the component
   return (
     <div className="w-full h-full">
       <style jsx>{`
         @media print {
           @page {
-            size: 80mm 100mm; /* Sesuaikan dengan ukuran kertas thermal Anda */
+            size: 80mm 100mm; /* Adjust to your thermal paper size */
           }
-          /* Gaya cetakan lainnya */
+          /* Other print styles */
           .print-card {
             width: 80mm;
             max-width: 80mm;

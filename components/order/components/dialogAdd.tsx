@@ -26,6 +26,7 @@ import {
 import { DropdownMenuContent } from '@radix-ui/react-dropdown-menu';
 import { onsaleSchema } from '@/schema';
 import { z } from 'zod';
+import { toast } from 'react-toastify';
 type ProductDetail = {
   sellprice: number;
 };
@@ -59,10 +60,22 @@ export function DialogAdd({
   useEffect(() => {
     const fetchProductStocks = async () => {
       try {
+        // Check if the user is online
+        const isOnline = navigator.onLine;
+
+        if (!isOnline) {
+          toast.error(
+            'You are offline. Please check your internet connection.'
+          );
+          return;
+        }
+
         const response = await axios.get<Data[]>('/api/storage');
         setProductStocks(response.data);
       } catch (error) {
-        console.error('Error fetching product stocks:', error);
+        toast.error(
+          'Error fetching product stocks: ' + (error as Error).message
+        );
       }
     };
 

@@ -6,6 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  PaginationEllipsis,
 } from '@/components/ui/pagination';
 
 import { usePathname, useSearchParams } from 'next/navigation';
@@ -21,11 +22,8 @@ export function PaginationDemo({ totalPages }: { totalPages: number }) {
     params.set('page', pageNumber.toString());
     return `${pathname}?${params.toString()}`;
   };
-  const allPages = generatePagination(currentPage, totalPages);
 
-  const visiblePages = allPages
-    .filter((page) => typeof page === 'number')
-    .slice(0, 4);
+  const allPages = generatePagination(currentPage, totalPages);
 
   return (
     <Pagination>
@@ -38,14 +36,18 @@ export function PaginationDemo({ totalPages }: { totalPages: number }) {
             hidden={currentPage === 1}
           />
         </PaginationItem>
-        {visiblePages.map((page, index) => (
+        {allPages.map((page, index) => (
           <PaginationItem key={index}>
-            <PaginationLink
-              href={createPageURL(page)}
-              isActive={currentPage === page}
-            >
-              {page}
-            </PaginationLink>
+            {typeof page === 'number' ? (
+              <PaginationLink
+                href={createPageURL(page)}
+                isActive={currentPage === page}
+              >
+                {page}
+              </PaginationLink>
+            ) : (
+              <PaginationEllipsis>{page}</PaginationEllipsis>
+            )}
           </PaginationItem>
         ))}
         <PaginationItem hidden={currentPage === totalPages}>
