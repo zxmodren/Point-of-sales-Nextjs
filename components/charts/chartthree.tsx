@@ -51,7 +51,7 @@ const ChartThree: React.FC = () => {
     series: [
       {
         name: 'Sales',
-        data: [44, 55, 41, 67, 22],
+        data: [],
       },
     ],
     options: initialChartThreeOptions,
