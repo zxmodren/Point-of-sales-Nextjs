@@ -10,6 +10,9 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm install
 
+# Generate Prisma
+RUN npx prisma generate
+
 # Copy seluruh kode aplikasi
 COPY . .
 
