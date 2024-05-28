@@ -10,14 +10,15 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm install
 
-# Generate Prisma
-RUN npx prisma generate
 
 # Copy seluruh kode aplikasi
 COPY . .
 
 # Copy .env file
 COPY .env .env
+
+# Generate Prisma
+RUN npx prisma generate
 
 # Build aplikasi Next.js
 RUN npm run build
