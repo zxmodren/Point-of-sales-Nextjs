@@ -23,25 +23,20 @@ export async function GET(req: NextRequest) {
 
     // Get detailed information for each top product
     const productDetails = await Promise.all(
-      topProducts.map(
-        async (product: {
-          _sum: { quantity: number | null };
-          productId: string;
-        }) => {
-          const productDetail = await prisma.product.findUnique({
-            where: {
-              productId: product.productId,
-            },
-            include: {
-              productstock: true,
-            },
-          });
-          return {
-            ...productDetail,
-            _sum: product._sum.quantity ?? 0,
-          };
-        }
-      )
+      topProducts.map(async (product) => {
+        const productDetail = await prisma.product.findUnique({
+          where: {
+            productId: product.productId,
+          },
+          include: {
+            productstock: true,
+          },
+        });
+        return {
+          ...productDetail,
+          _sum: product._sum,
+        };
+      })
     );
 
     // Return the top products with their details as a JSON response with a 200 status code
