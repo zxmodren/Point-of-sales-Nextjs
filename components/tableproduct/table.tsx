@@ -14,6 +14,7 @@ import { PaginationDemo } from '@/components/paginations/pagination';
 import { fetchProduct } from '@/data/product';
 import { PageProps } from '@/types/paginations';
 import AddButtonComponent from './components/btn/addProduct';
+import RestockButtonComponent from './components/btn/restockProduct';
 import { SearchInput } from '@/components/search/search';
 import { toast } from 'react-toastify';
 // TableProduct component to display a table of products
@@ -53,6 +54,10 @@ export default async function TableProduct(props: PageProps) {
         {/* Add button for adding new products */}
         <div className="mr-3">
           <AddButtonComponent />
+        </div>
+        {/* Restock button for restock products */}
+        <div className="mr-3">
+          <RestockButtonComponent />
         </div>
       </div>
       {/* Card content with table of products */}

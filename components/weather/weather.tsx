@@ -72,8 +72,7 @@ function WeatherComponent(): React.ReactNode {
       })
       .catch((error) => {
         // Handle errors
-        console.error('Error fetching weather data:', error);
-        toast.error(`Error fetching weather data: ${error.message}`);
+        toast.error(`${error.message}`);
       });
   }, [apiKey]);
 

@@ -10,7 +10,7 @@ export const productSchema = z
     productName: z
       .string()
       .min(2, 'Product name must be at least 2 characters')
-      .nonempty('Product name cannot be empty'),
+      .min(1, 'Product name cannot be empty'),
     buyPrice: z
       .number()
       .positive('Buy price must be a positive number')
@@ -25,7 +25,7 @@ export const productSchema = z
       .min(1, 'Stock min 1'),
     category: z
       .string()
-      .nonempty('Category cannot be empty')
+      .min(1, 'Category cannot be empty')
       .refine(categoryValidator, {
         message: 'Select category',
         params: {
@@ -44,10 +44,25 @@ export const productSchema = z
     }
   );
 export const onsaleSchema = z.object({
-  productId: z.string().nonempty('Select Product'),
+  productId: z.string().min(1, 'Select Product'),
   qTy: z.number().positive('Qty must be a positive number').min(1, 'Qty min 1'),
-  transactionId: z.string().nonempty('Transaction Id is Empty'),
+  transactionId: z.string().min(1, 'Transaction Id is Empty'),
 });
 export const orderSchema = z.object({
   qTy: z.number().positive('Qty must be a positive number').min(1, 'Qty min 1'),
+});
+export const taxSchema = z.object({
+  tax: z.number().min(0, 'Tax min 0').max(100, 'Tax max 100'),
+});
+export const shopnameSchema = z.object({
+  storeName: z
+    .string()
+    .min(1, 'Store Name is Empty')
+    .min(2, 'Store Name min 2 characters'),
+});
+export const restockSchema = z.object({
+  stock: z
+    .number()
+    .positive('stock must be a positive number')
+    .min(1, 'stock min 1'),
 });

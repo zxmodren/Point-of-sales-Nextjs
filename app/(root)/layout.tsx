@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import NextTopLoader from 'nextjs-toploader';
 interface RootLayoutProps {
   children: React.ReactNode;
 }
@@ -12,7 +13,53 @@ import { ThemeProvider } from '@/components/theme-provider';
 import Navbar from '@/components/dashboard/navbar';
 import { NavbarSheet } from '@/components/dashboard/NavbarSheet';
 import Bread from '@/components/dashboard/breadcrumb';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import eventBus from '@/lib/even';
 const RootLayout = ({ children }: RootLayoutProps) => {
+  const [storeName, setStoreName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchShopData = async () => {
+      try {
+        const isOnline = navigator.onLine;
+
+        if (!isOnline) {
+          toast.error(
+            'You are offline. Please check your internet connection.'
+          );
+          return;
+        }
+
+        const response = await axios.get('/api/shopdata');
+        const shopdata = response.data.data;
+
+        if (response.status === 200) {
+          setStoreName(shopdata.name);
+        } else {
+          toast.error('Failed to fetch data: ' + shopdata.error);
+        }
+      } catch (error: any) {
+        toast.error(
+          'Failed to fetch data: ' +
+            (error.response?.data.error || error.message)
+        );
+      }
+    };
+
+    fetchShopData();
+
+    const handleEventBusEvent = () => {
+      fetchShopData();
+    };
+
+    eventBus.on('fetchStoreData', handleEventBusEvent);
+
+    // Clean up event listener
+    return () => {
+      eventBus.removeListener('fetchStoreData', handleEventBusEvent);
+    };
+  }, []);
   return (
     <div className="bg-gray-300  dark:bg-black">
       <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -21,7 +68,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
             <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
               <Link href="/" className="flex items-center gap-2 font-semibold">
                 <TriangleAlert className="h-6 w-6" />
-                <span className="">404 Inc</span>
+                <span className="">{storeName} Inc</span>
               </Link>
             </div>
             <Navbar />
@@ -56,6 +103,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
                 enableSystem
                 disableTransitionOnChange
               >
+                <NextTopLoader showSpinner={false} />
                 {children}
               </ThemeProvider>
             </div>

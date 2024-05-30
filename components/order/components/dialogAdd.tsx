@@ -180,10 +180,13 @@ export function DialogAdd({
                 {productStocks
                   .filter(
                     (product) =>
-                      product.name
+                      (product.name
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase()) ||
-                      product.id.toString().includes(searchTerm.toLowerCase())
+                        product.id
+                          .toString()
+                          .includes(searchTerm.toLowerCase())) &&
+                      product.stock > 0
                   )
                   .map((product) => (
                     <DropdownMenuRadioItem key={product.id} value={product.id}>
@@ -236,8 +239,16 @@ export function DialogAdd({
                 className="col-span-3"
                 type="number"
                 onChange={(e) => {
-                  setqTy(e.target.value);
-                  setError((prevError) => ({ ...prevError, qTy: '' }));
+                  const newQty = parseInt(e.target.value);
+                  if (selectedResult && newQty <= selectedResult.stock) {
+                    setqTy(newQty.toString());
+                    setError((prevError) => ({ ...prevError, qTy: '' }));
+                  } else {
+                    setError((prevError) => ({
+                      ...prevError,
+                      qTy: 'Quantity cannot exceed available stock',
+                    }));
+                  }
                 }}
               />
               {error?.qTy && (

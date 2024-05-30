@@ -21,7 +21,10 @@ function DashboardCard(): React.ReactNode {
         setTotalAmount(totalAmount?._sum?.totalAmount);
         setTotalPrdSale(totalQuantity?._sum?.quantity);
       })
-      .catch((error) => toast.error('Error:', error));
+      .catch((error) => {
+        // Handle errors
+        toast.error(`${error.message}`);
+      });
   }, []);
 
   // Animation variants for the first and second cards

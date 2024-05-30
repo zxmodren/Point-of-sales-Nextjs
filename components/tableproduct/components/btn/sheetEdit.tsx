@@ -71,6 +71,7 @@ export function SheetEdit({
   );
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
   useEffect(() => {
     if (!open) {
       // Reset input value when sheet is closed
@@ -89,6 +90,7 @@ export function SheetEdit({
     data.productstock.cat,
     data.productstock.price,
   ]);
+
   const handleCancel = () => {
     onClose();
     setError({});
@@ -105,6 +107,21 @@ export function SheetEdit({
       setLoading(false);
       return;
     }
+
+    // Check if any changes were made
+    if (
+      productName === data.productstock.name &&
+      buyPriceNumber === data.productstock.price &&
+      sellPriceNumber === data.sellprice &&
+      stockProductNumber === data.productstock.stock &&
+      categoryProduct === data.productstock.cat
+    ) {
+      toast.info('No changes made.');
+      setLoading(false);
+      onClose();
+      return;
+    }
+
     try {
       const validatedData = productSchema.parse({
         productName: productName,
@@ -115,10 +132,7 @@ export function SheetEdit({
       });
 
       // Send validated data using axios
-      const response = await axios.patch(
-        `/api/product/${data.productstock.id}`,
-        validatedData
-      );
+      await axios.patch(`/api/product/${data.productstock.id}`, validatedData);
       onClose();
       router.refresh();
     } catch (error) {

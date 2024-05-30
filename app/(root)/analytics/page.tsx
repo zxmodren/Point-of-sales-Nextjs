@@ -1,11 +1,6 @@
 import React from 'react';
-import { CardHoverEffectDemo } from '@/components/cardHover/hover';
 const page = () => {
-  return (
-    <div className="w-full h-full">
-      <CardHoverEffectDemo />
-    </div>
-  );
+  return <div className="w-full h-full">page</div>;
 };
 
 export default page;

@@ -1,0 +1,75 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  name String [not null]
+  username String [not null]
+  email String [unique]
+  emailVerified DateTime
+  image String
+  password String
+  role UserRole [not null, default: 'UNKNOW']
+}
+
+Table ProductStock {
+  id String [pk]
+  name String [not null]
+  imageProduct String
+  price Float [not null]
+  stock Float [not null]
+  cat CatProduct [not null]
+  Product Product [not null]
+}
+
+Table Product {
+  id String [pk]
+  productId String [unique, not null]
+  productstock ProductStock [not null]
+  sellprice Float [not null]
+  OnSaleProduct OnSaleProduct [not null]
+}
+
+Table OnSaleProduct {
+  id String [pk]
+  productId String [not null]
+  quantity Int [not null]
+  saledate DateTime [default: `now()`, not null]
+  transactionId String [not null]
+  product Product [not null]
+  transaction Transaction [not null]
+}
+
+Table Transaction {
+  id String [pk]
+  totalAmount Decimal
+  createdAt DateTime [default: `now()`, not null]
+  isComplete Boolean [not null, default: false]
+  products OnSaleProduct [not null]
+}
+
+Table ShopData {
+  id String [pk]
+  tax Int
+  name String
+}
+
+Enum UserRole {
+  OWNER
+  WORKER
+  UNKNOW
+}
+
+Enum CatProduct {
+  ELECTRO
+  DRINK
+  FOOD
+  FASHION
+}
+
+Ref: Product.productId > ProductStock.id [delete: Cascade]
+
+Ref: OnSaleProduct.productId > Product.productId [delete: Cascade]
+
+Ref: OnSaleProduct.transactionId > Transaction.id [delete: Cascade]

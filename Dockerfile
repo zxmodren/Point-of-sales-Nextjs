@@ -1,4 +1,4 @@
-# Gunakan Node.js sebagai base image
+# Use Node.js as base image
 FROM node:18-alpine
 
 # Set working directory
@@ -10,8 +10,7 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm install
 
-
-# Copy seluruh kode aplikasi
+# Copy all code
 COPY . .
 
 # Copy .env file
@@ -20,14 +19,14 @@ COPY .env .env
 # Generate Prisma
 RUN npx prisma generate
 
-# Build aplikasi Next.js
+# Build Next.js
 RUN npm run build
 
-# Set environment variables (jika diperlukan)
+# Set environment variables 
 ENV NODE_ENV=production
 
-# Expose port yang digunakan oleh Next.js
+# Expose port Next.js
 EXPOSE 3000
 
-# Jalankan aplikasi
+# Run app
 CMD ["npm", "start"]

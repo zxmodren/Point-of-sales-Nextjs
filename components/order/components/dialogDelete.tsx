@@ -1,36 +1,35 @@
-'use client'; // Use client-side rendering
+'use client';
 
 import {
-  AlertDialog, // Import AlertDialog component
-  AlertDialogAction, // Import AlertDialogAction component
-  AlertDialogCancel, // Import AlertDialogCancel component
-  AlertDialogDescription, // Import AlertDialogDescription component
-  AlertDialogFooter, // Import AlertDialogFooter component
-  AlertDialogHeader, // Import AlertDialogHeader component
-  AlertDialogTitle, // Import AlertDialogTitle component
-} from '@/components/ui/alert-dialog'; // Import components from the alert-dialog module
-import eventBus from '@/lib/even'; // Import the event bus from the even module
-import * as AlertDialogR from '@radix-ui/react-alert-dialog'; // Import components from Radix UI
-import { ReloadIcon } from '@radix-ui/react-icons'; // Import ReloadIcon component from Radix UI icons
-import axios from 'axios'; // Import axios for HTTP requests
-import { useState, useEffect } from 'react'; // Import useState and useEffect hooks from React
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import eventBus from '@/lib/even';
+import * as AlertDialogR from '@radix-ui/react-alert-dialog';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-// Define a functional component called AlertDialogDeletetransaction
+
 export function AlertDialogDeletetransaction({
-  open, // Boolean to determine if the dialog is open
-  onClose, // Function to close the dialog
-  transactionId, // ID of the transaction to be deleted
-  setTransactionId, // Function to update the transaction ID
+  open,
+  onClose,
+  transactionId,
+  setTransactionId,
 }: {
   open: boolean;
   onClose: () => void;
   transactionId: string | null;
   setTransactionId: (id: string | null) => void;
 }) {
-  const [loading, setLoading] = useState(false); // State variable to track loading state
-
+  const [loading, setLoading] = useState(false);
   const handleCancel = () => {
-    onClose(); // Close the dialog when Cancel is clicked
+    onClose();
   };
 
   const handleDelete = async () => {
@@ -49,7 +48,6 @@ export function AlertDialogDeletetransaction({
         onClose(); // Close the dialog
         localStorage.removeItem('transactionId'); // Remove the transactionId from localStorage
         setTransactionId(null); // Set the transactionId to null
-        eventBus.emit('fetchTransactionData'); // Emit an event to fetch transaction data
       } else if (response.status === 404) {
         // Data not found in the database, remove transactionId from localStorage
         localStorage.removeItem('transactionId');

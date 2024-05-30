@@ -7,8 +7,12 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 generator custom_generator {
   provider = "prisma-generator-fake-data"
+}
+generator dbml {
+  provider = "prisma-dbml-generator"
 }
 
 datasource db {
