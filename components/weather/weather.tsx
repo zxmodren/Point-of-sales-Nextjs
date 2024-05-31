@@ -83,7 +83,7 @@ function WeatherComponent(): React.ReactNode {
 
   // Render weather component with fetched data
   return (
-    <div className="flex flex-1 justify-center items-center w-full h-full min-h-[6rem] rounded-xl dark:bg-dot-white/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]  border border-transparent dark:border-white/[0.2] bg-gray-400  dark:bg-black">
+    <div className="flex flex-1 justify-center items-center w-full h-full min-h-[6rem] rounded-xl dark:bg-dot-white/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]  border border-transparent dark:border-white/[0.2] bg-gray-400/[0.7] dark:bg-black">
       <div className="flex flex-col items-center text-neutral-800 dark:text-neutral-200 font-roboto">
         <div className="text-3xl font-bold">{weather.name}</div>
         <div className="text-xl">{weather.weather[0].description}</div>

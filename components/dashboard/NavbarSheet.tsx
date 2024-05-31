@@ -22,7 +22,6 @@ export function NavbarSheet() {
             className="flex items-center gap-2 text-lg font-semibold"
           >
             <TriangleAlert className="h-6 w-6" />
-            <span className="sr-only">Acme Inc</span>
           </Link>
 
           {/* Map through NAVBAR_ITEMS to create navigation links */}
