@@ -66,11 +66,7 @@ const items = [
 
   {
     title: 'Network Speed',
-    description: (
-      <span className="text-sm">
-        Summarize your lengthy documents with AI technology.
-      </span>
-    ),
+    description: <span className="text-sm">Summarize your Network Speed.</span>,
     header: <NetworkSpeed />,
     className: 'md:col-span-1',
     icon: <IconWifi className="h-4 w-4 text-neutral-500" />,
