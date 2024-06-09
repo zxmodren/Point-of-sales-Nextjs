@@ -27,6 +27,7 @@ import { DropdownMenuContent } from '@radix-ui/react-dropdown-menu';
 import { onsaleSchema } from '@/schema';
 import { z } from 'zod';
 import { toast } from 'react-toastify';
+
 type ProductDetail = {
   sellprice: number;
 };
@@ -40,6 +41,7 @@ type Data = {
   cat: string;
   Product: ProductDetail[];
 };
+
 export function DialogAdd({
   open,
   onClose,
@@ -57,30 +59,39 @@ export function DialogAdd({
   const [error, setError] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
   const qTyNumber = parseFloat(qTy) || 0;
+
   useEffect(() => {
-    const fetchProductStocks = async () => {
-      try {
-        // Check if the user is online
-        const isOnline = navigator.onLine;
+    if (open) {
+      const fetchProductStocks = async () => {
+        try {
+          // Check if the user is online
+          const isOnline = navigator.onLine;
 
-        if (!isOnline) {
-          toast.error(
-            'You are offline. Please check your internet connection.'
-          );
-          return;
+          if (!isOnline) {
+            toast.error(
+              'You are offline. Please check your internet connection.'
+            );
+            return;
+          }
+
+          const response = await axios.get<Data[]>('/api/storage');
+          setProductStocks(response.data);
+        } catch (error) {
+          if (error instanceof Error) {
+            toast.error('Error fetching product stocks: ' + error.message);
+          } else {
+            toast.error(
+              'An unknown error occurred while fetching product stocks'
+            );
+          }
         }
+      };
 
-        const response = await axios.get<Data[]>('/api/storage');
-        setProductStocks(response.data);
-      } catch (error) {
-        toast.error(
-          'Error fetching product stocks: ' + (error as Error).message
-        );
-      }
-    };
+      fetchProductStocks();
+    }
+  }, [open]);
 
-    fetchProductStocks();
-
+  useEffect(() => {
     if (searchTerm === '') {
       setSelectedResult(null);
       setSelectedProduct('');
@@ -95,6 +106,7 @@ export function DialogAdd({
     onClose();
     setError({});
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -105,7 +117,7 @@ export function DialogAdd({
       });
 
       // Send validated data using axios
-      const response = await axios.post('/api/onsale', validatedData);
+      await axios.post('/api/onsale', validatedData);
 
       // If no errors, close the dialog
       onClose();
@@ -137,7 +149,7 @@ export function DialogAdd({
 
   return (
     <Dialog open={open}>
-      <DialogR.Overlay className="fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+      <DialogR.Overlay className="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
       <DialogR.Content className="sm:max-w-[425px] fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg">
         <DialogHeader>
           <DialogTitle>Add product</DialogTitle>
@@ -238,21 +250,15 @@ export function DialogAdd({
                 id="qty"
                 className="col-span-3"
                 type="number"
+                value={qTy}
                 onChange={(e) => {
-                  const newQty = parseInt(e.target.value);
-                  if (selectedResult && newQty <= selectedResult.stock) {
-                    setqTy(newQty.toString());
-                    setError((prevError) => ({ ...prevError, qTy: '' }));
-                  } else {
-                    setError((prevError) => ({
-                      ...prevError,
-                      qTy: 'Quantity cannot exceed available stock',
-                    }));
-                  }
+                  const newQty = e.target.value;
+                  setqTy(newQty);
+                  setError((prevError) => ({ ...prevError, qTy: '' }));
                 }}
               />
-              {error?.qTy && (
-                <div className="col-start-2 col-span-3 text-red-500">
+              {error.qTy && (
+                <div className="text-red-500 col-span-3 col-start-2">
                   {error.qTy}
                 </div>
               )}
@@ -260,19 +266,14 @@ export function DialogAdd({
           </div>
         </div>
         <DialogFooter>
-          <Button type="button" variant="secondary" onClick={handleCancel}>
-            Close
+          <Button type="button" variant="outline" onClick={handleCancel}>
+            Cancel
           </Button>
-          <Button
-            type="submit"
-            onClick={handleAdd}
-            disabled={loading}
-            className="text-gray-100"
-          >
+          <Button type="button" onClick={handleAdd} disabled={loading}>
             {loading ? (
               <>
                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
+                Please wait...
               </>
             ) : (
               'Add'

@@ -10,21 +10,28 @@ function DashboardCard(): React.ReactNode {
   // State variables to store total stock, total amount, and total quantity
   const [totalStock, setTotalStock] = useState<number | null>(null);
   const [totalAmount, setTotalAmount] = useState<number | null>(null);
-  const [totalQuantity, setTotalPrdSale] = useState<number | null>(null);
+  const [totalQuantity, setTotalQuantity] = useState<number | null>(null);
 
   // Fetch total values on component mount
   useEffect(() => {
-    getTotal()
-      .then(({ totalStock, totalAmount, totalQuantity }) => {
+    const fetchData = async () => {
+      try {
+        const { totalStock, totalAmount, totalQuantity } = await getTotal();
         // Set state with fetched data
-        setTotalStock(totalStock?._sum?.stock);
-        setTotalAmount(totalAmount?._sum?.totalAmount);
-        setTotalPrdSale(totalQuantity?._sum?.quantity);
-      })
-      .catch((error) => {
-        // Handle errors
-        toast.error(`${error.message}`);
-      });
+        setTotalStock(totalStock?._sum?.stock || 0);
+        setTotalAmount(totalAmount?._sum?.totalAmount || 0);
+        setTotalQuantity(totalQuantity?._sum?.quantity || 0);
+      } catch (error) {
+        // Handle errors with type assertion
+        if (error instanceof Error) {
+          toast.error(`Error: ${error.message}`);
+        } else {
+          toast.error('An unknown error occurred');
+        }
+      }
+    };
+
+    fetchData();
   }, []);
 
   // Animation variants for the first and second cards
