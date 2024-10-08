@@ -17,10 +17,6 @@ This is a full-featured Point of Sale (POS) system built using **Next.js 14**, *
 - **Supabase**: Hosted PostgreSQL database for handling data storage, authentication, and APIs.
 - **Tailwind CSS**: Utility-first CSS framework for styling the application.
 
-## Installation
-
-To set up this project locally, follow these steps:
-
 ### Prerequisites
 
 - **Node.js** (v18 or later)
